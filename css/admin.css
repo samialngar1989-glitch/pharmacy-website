@@ -1,0 +1,365 @@
+/* ============================================================
+   admin.css — تنسيقات لوحة التحكم
+   ============================================================ */
+
+.admin-body {
+  background: var(--bg-alt);
+  min-height: 100vh;
+}
+
+/* ---------------- شاشة الدخول ---------------- */
+.login-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(135deg, var(--primary-light), var(--bg-alt));
+}
+
+.login-box {
+  background: var(--bg);
+  border-radius: var(--radius);
+  padding: 40px 30px;
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+}
+
+.login-logo {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+.login-box h1 {
+  color: var(--primary-dark);
+  margin-bottom: 4px;
+  font-size: 1.4rem;
+}
+
+.login-box > p {
+  color: var(--text-light);
+  margin-bottom: 24px;
+  font-size: 0.92rem;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  margin-bottom: 14px;
+  font-family: inherit;
+  text-align: center;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.login-box input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.login-error {
+  color: var(--danger);
+  font-size: 0.88rem;
+  margin-top: 10px;
+  min-height: 20px;
+  font-weight: 600;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 20px;
+  color: var(--text-light);
+  font-size: 0.88rem;
+}
+
+.back-link:hover {
+  color: var(--primary);
+}
+
+/* ---------------- الهيدر ---------------- */
+.admin-header {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.admin-header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-header h1 {
+  font-size: 1.15rem;
+  color: var(--primary-dark);
+}
+
+.admin-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* ---------------- الحاوية ---------------- */
+.admin-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 20px;
+}
+
+/* ---------------- الإحصائيات ---------------- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+  border-top: 4px solid var(--primary);
+}
+
+.stat-card.pending   { border-top-color: #f59e0b; }
+.stat-card.preparing { border-top-color: #3b82f6; }
+.stat-card.done      { border-top-color: #10b981; }
+
+.stat-num {
+  display: block;
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--text-light);
+}
+
+/* ---------------- أدوات ---------------- */
+.admin-toolbar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.admin-toolbar input,
+.admin-toolbar select {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.92rem;
+  font-family: inherit;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.admin-toolbar input {
+  flex: 1;
+  min-width: 200px;
+}
+
+.admin-toolbar input:focus,
+.admin-toolbar select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.btn-sm {
+  padding: 9px 16px;
+  font-size: 0.88rem;
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: #b91c1c;
+}
+
+/* ---------------- بطاقة الطلب ---------------- */
+.order-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.2s;
+}
+
+.order-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.order-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.order-customer {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--text);
+}
+
+.order-meta {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  margin-top: 2px;
+}
+
+.order-date {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  white-space: nowrap;
+}
+
+/* حالة الطلب */
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.status-قيد-الانتظار  { background: #fef3c7; color: #92400e; }
+.status-قيد-التجهيز   { background: #dbeafe; color: #1e40af; }
+.status-جاهز-للاستلام { background: #e0e7ff; color: #3730a3; }
+.status-تم-التسليم    { background: #d1fae5; color: #065f46; }
+.status-ملغي          { background: #fee2e2; color: #991b1b; }
+
+body.dark .status-قيد-الانتظار  { background: #78350f; color: #fde68a; }
+body.dark .status-قيد-التجهيز   { background: #1e3a8a; color: #bfdbfe; }
+body.dark .status-جاهز-للاستلام { background: #3730a3; color: #c7d2fe; }
+body.dark .status-تم-التسليم    { background: #064e3b; color: #a7f3d0; }
+body.dark .status-ملغي          { background: #7f1d1d; color: #fecaca; }
+
+/* تفاصيل الطلب */
+.order-details {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+  margin-top: 12px;
+  font-size: 0.9rem;
+}
+
+.order-details p {
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.order-details strong {
+  color: var(--primary-dark);
+}
+
+.order-items-list {
+  margin: 8px 0;
+  padding-right: 18px;
+  list-style: disc;
+}
+
+.order-items-list li {
+  color: var(--text);
+  margin-bottom: 3px;
+}
+
+/* أزرار الإجراءات */
+.order-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.status-select {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-family: inherit;
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.status-select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.btn-delete-order {
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-delete-order:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+/* الحالة الفارغة */
+.empty-state {
+  text-align: center;
+  color: var(--text-light);
+  padding: 60px 20px;
+  font-size: 1rem;
+}
+
+/* ---------------- الاستجابة للجوال ---------------- */
+@media (max-width: 600px) {
+  .admin-header h1 {
+    font-size: 0.95rem;
+  }
+
+  .stat-num {
+    font-size: 1.4rem;
+  }
+
+  .stat-card {
+    padding: 14px;
+  }
+
+  .admin-toolbar input {
+    min-width: 100%;
+  }
+
+  .order-card {
+    padding: 14px;
+  }
+
+  .order-card-header {
+    flex-direction: column;
+  }
+}
