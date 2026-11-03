@@ -4,7 +4,18 @@
 
 /* ⚙️ عدّلي هذا الرقم فقط */
 const WHATSAPP_NUMBER = "966773704939"; // بدون + أو مسافات
+/* ---------------- دعم تغيير اللغة لأسماء المنتجات ---------------- */
+let currentLang = localStorage.getItem("pharmacy_lang") || "ar";
 
+window.addEventListener("languageChanged", (e) => {
+  currentLang = e.detail.lang;
+});
+
+function getProductName(btn) {
+  return currentLang === "en"
+    ? (btn.dataset.nameEn || btn.dataset.name)
+    : btn.dataset.name;
+}
 /* ---------------- عناصر الصفحة ---------------- */
 const orderListEl   = document.getElementById("orderList");
 const orderTotalEl  = document.getElementById("orderTotal");
@@ -19,7 +30,7 @@ let cart = []; // [{name, price, qty}]
 /* ---------------- إضافة منتج ---------------- */
 document.querySelectorAll(".add-to-order").forEach(btn => {
   btn.addEventListener("click", () => {
-    const name  = btn.dataset.name;
+    const name  = getProductName(btn);
     const price = parseFloat(btn.dataset.price) || 0;
 
     const existing = cart.find(item => item.name === name);
