@@ -1,1 +1,89 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>لوحة التحكم | صيدلية [الاسم]</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dark-mode.css" />
+  <link rel="stylesheet" href="css/admin.css" />
+  <link rel="icon" href="images/logo.png" />
+</head>
+<body class="admin-body">
 
+  <!-- ==================== شاشة الدخول ==================== -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-box">
+      <div class="login-logo">🔐</div>
+      <h1>لوحة التحكم</h1>
+      <p>صيدلية [الاسم]</p>
+      <form id="loginForm">
+        <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور" required autocomplete="off" />
+        <button type="submit" class="btn btn-primary btn-block">دخول</button>
+        <p class="login-error" id="loginError"></p>
+      </form>
+      <a href="index.html" class="back-link">← العودة للموقع</a>
+    </div>
+  </div>
+
+  <!-- ==================== لوحة التحكم ==================== -->
+  <div class="admin-panel" id="adminPanel" style="display:none;">
+
+    <!-- الهيدر -->
+    <header class="admin-header">
+      <div class="admin-header-inner">
+        <h1>📋 لوحة التحكم</h1>
+        <div class="admin-actions">
+          <button id="darkBtn" class="icon-btn" title="الوضع الليلي">🌙</button>
+          <button id="logoutBtn" class="btn btn-outline btn-sm">خروج</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- الإحصائيات -->
+    <div class="admin-container">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-num" id="statTotal">0</span>
+          <span class="stat-label">إجمالي الطلبات</span>
+        </div>
+        <div class="stat-card pending">
+          <span class="stat-num" id="statPending">0</span>
+          <span class="stat-label">قيد الانتظار</span>
+        </div>
+        <div class="stat-card preparing">
+          <span class="stat-num" id="statPreparing">0</span>
+          <span class="stat-label">قيد التجهيز</span>
+        </div>
+        <div class="stat-card done">
+          <span class="stat-num" id="statDone">0</span>
+          <span class="stat-label">تم التسليم</span>
+        </div>
+      </div>
+
+      <!-- أدوات -->
+      <div class="admin-toolbar">
+        <input type="text" id="searchInput" placeholder="🔍 ابحث بالاسم أو الجوال..." />
+        <select id="filterStatus">
+          <option value="all">كل الحالات</option>
+          <option value="قيد الانتظار">قيد الانتظار</option>
+          <option value="قيد التجهيز">قيد التجهيز</option>
+          <option value="جاهز للاستلام">جاهز للاستلام</option>
+          <option value="تم التسليم">تم التسليم</option>
+          <option value="ملغي">ملغي</option>
+        </select>
+        <button id="exportBtn" class="btn btn-outline btn-sm">⬇ تصدير CSV</button>
+        <button id="clearAllBtn" class="btn btn-danger btn-sm">🗑 حذف الكل</button>
+      </div>
+
+      <!-- قائمة الطلبات -->
+      <div id="ordersContainer">
+        <p class="empty-state">لا توجد طلبات حتى الآن.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>
