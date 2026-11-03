@@ -1,1 +1,329 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="صيدلية [الاسم] - أدوية ومستلزمات طبية أصلية، استشارة دوائية وتوصيل سريع" />
+  <title>صيدلية [الاسم] | صحتك أمانة</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dark-mode.css" />
+  <link rel="icon" href="images/logo.png" />
+</head>
+<body>
 
+  <!-- ==================== HEADER ==================== -->
+  <header class="header" id="header">
+    <div class="container header-inner">
+      <a href="#home" class="logo">
+        <img src="images/logo.png" alt="شعار الصيدلية" />
+        <span>صيدلية [الاسم]</span>
+      </a>
+
+      <nav class="nav" id="nav">
+        <a href="#home">الرئيسية</a>
+        <a href="#categories">الأقسام</a>
+        <a href="#products">المنتجات</a>
+        <a href="#services">الخدمات</a>
+        <a href="#offers">العروض</a>
+        <a href="#testimonials">آراء العملاء</a>
+        <a href="#order">اطلب الآن</a>
+      </nav>
+
+      <div class="header-actions">
+        <button id="langBtn" class="icon-btn" title="تغيير اللغة">EN</button>
+        <button id="darkBtn" class="icon-btn" title="الوضع الليلي">🌙</button>
+        <button id="menuBtn" class="icon-btn menu-btn" title="القائمة">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== HERO ==================== -->
+  <section class="hero" id="home">
+    <div class="container hero-inner">
+      <div class="hero-text">
+        <h1>صحتك أمانة بين أيدينا</h1>
+        <p>
+          نقدم لك أفضل الأدوية والمستلزمات الطبية الأصلية، مع استشارة صيدلانية
+          موثوقة وتوصيل سريع لباب منزلك.
+        </p>
+        <div class="hero-buttons">
+          <a href="#order" class="btn btn-primary">اطلب الآن</a>
+          <a href="#services" class="btn btn-outline">خدماتنا</a>
+        </div>
+      </div>
+      <div class="hero-image">
+        <img src="images/gallery/pharmacy-hero.jpg" alt="صيدلية" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== CATEGORIES ==================== -->
+  <section class="section" id="categories">
+    <div class="container">
+      <h2 class="section-title">الأقسام</h2>
+      <p class="section-subtitle">تصفح حسب القسم</p>
+
+      <div class="categories-grid">
+        <button class="category-card" data-filter="all">الكل</button>
+        <button class="category-card" data-filter="general">أدوية عامة</button>
+        <button class="category-card" data-filter="vitamins">فيتامينات ومكملات</button>
+        <button class="category-card" data-filter="skincare">العناية بالبشرة</button>
+        <button class="category-card" data-filter="mom-baby">الأم والطفل</button>
+        <button class="category-card" data-filter="devices">أجهزة القياس</button>
+        <button class="category-card" data-filter="supplies">مستلزمات طبية</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PRODUCTS ==================== -->
+  <section class="section section-alt" id="products">
+    <div class="container">
+      <h2 class="section-title">المنتجات</h2>
+      <p class="section-subtitle">منتجات أصلية بأسعار مناسبة</p>
+
+      <div class="products-grid" id="productsGrid">
+
+        <div class="product-card" data-category="vitamins">
+          <img src="images/products/vitamin-c.jpg" alt="فيتامين سي" />
+          <h3>فيتامين سي 1000mg</h3>
+          <p class="price">50 ر.س</p>
+          <button class="btn btn-primary add-to-order"
+                  data-name="فيتامين سي 1000mg"
+                  data-price="50">أضف للطلب</button>
+        </div>
+
+        <div class="product-card" data-category="general">
+          <img src="images/products/panadol.jpg" alt="بنادول" />
+          <h3>بنادول إكسترا</h3>
+          <p class="price">18 ر.س</p>
+          <button class="btn btn-primary add-to-order"
+                  data-name="بنادول إكسترا"
+                  data-price="18">أضف للطلب</button>
+        </div>
+
+        <div class="product-card" data-category="skincare">
+          <img src="images/products/sunscreen.jpg" alt="واقي شمس" />
+          <h3>واقي شمس SPF 50</h3>
+          <p class="price">75 ر.س</p>
+          <button class="btn btn-primary add-to-order"
+                  data-name="واقي شمس SPF 50"
+                  data-price="75">أضف للطلب</button>
+        </div>
+
+        <div class="product-card" data-category="mom-baby">
+          <img src="images/products/baby-milk.jpg" alt="حليب أطفال" />
+          <h3>حليب أطفال 400g</h3>
+          <p class="price">65 ر.س</p>
+          <button class="btn btn-primary add-to-order"
+                  data-name="حليب أطفال 400g"
+                  data-price="65">أضف للطلب</button>
+        </div>
+
+        <div class="product-card" data-category="devices">
+          <img src="images/products/bp-monitor.jpg" alt="جهاز ضغط" />
+          <h3>جهاز قياس الضغط</h3>
+          <p class="price">180 ر.س</p>
+          <button class="btn btn-primary add-to-order"
+                  data-name="جهاز قياس الضغط"
+                  data-price="180">أضف للطلب</button>
+        </div>
+
+        <div class="product-card" data-category="supplies">
+          <img src="images/products/masks.jpg" alt="كمامات" />
+          <h3>كمامات طبية (50 حبة)</h3>
+          <p class="price">25 ر.س</p>
+          <button class="btn btn-primary add-to-order"
+                  data-name="كمامات طبية 50 حبة"
+                  data-price="25">أضف للطلب</button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== SERVICES ==================== -->
+  <section class="section" id="services">
+    <div class="container">
+      <h2 class="section-title">خدماتنا</h2>
+      <p class="section-subtitle">رعاية صحية متكاملة</p>
+
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">🩺</div>
+          <h3>قياس الضغط والسكر</h3>
+          <p>خدمة قياس سريعة داخل الصيدلية بإشراف الصيدلي.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">💊</div>
+          <h3>تركيب الوصفات الطبية</h3>
+          <p>أرسل صورة الوصفة ونحضّر لك الدواء فورًا.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">👨‍⚕️</div>
+          <h3>الاستشارة الدوائية</h3>
+          <p>اسأل الصيدلي عن أي دواء أو تفاعل دوائي.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🚚</div>
+          <h3>التوصيل للمنزل</h3>
+          <p>توصيل سريع داخل المنطقة في نفس اليوم.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== OFFERS ==================== -->
+  <section class="section section-alt" id="offers">
+    <div class="container">
+      <h2 class="section-title">عروض الأسبوع</h2>
+      <p class="section-subtitle">خصومات حصرية لفترة محدودة</p>
+
+      <div class="offers-banner">
+        <div>
+          <h3>خصم 20% على الفيتامينات</h3>
+          <p>استخدم كود <strong>VIT20</strong> عند الطلب</p>
+        </div>
+        <a href="#order" class="btn btn-primary">اطلب الآن</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== TESTIMONIALS ==================== -->
+  <section class="section" id="testimonials">
+    <div class="container">
+      <h2 class="section-title">آراء العملاء</h2>
+      <p class="section-subtitle">ثقة عملائنا هي أغلى ما نملك</p>
+
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <p>"خدمة سريعة وأدوية أصلية، والتوصيل وصل بنفس اليوم. شكرًا!"</p>
+          <span>— أم عبدالله</span>
+        </div>
+        <div class="testimonial-card">
+          <p>"الصيدلي شرح لي كل تفاصيل الدواء بصبر. تعامل راقٍ."</p>
+          <span>— محمد أحمد</span>
+        </div>
+        <div class="testimonial-card">
+          <p>"أسعار مناسبة وعروض ممتازة على الفيتامينات."</p>
+          <span>— نورة س.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== ORDER FORM ==================== -->
+  <section class="section section-alt" id="order">
+    <div class="container">
+      <h2 class="section-title">اطلب الآن</h2>
+      <p class="section-subtitle">اختر منتجاتك وأتمم الطلب عبر واتساب</p>
+
+      <div class="order-wrapper">
+
+        <!-- ملخص الطلب -->
+        <div class="order-summary">
+          <h3>سلة الطلب</h3>
+          <ul id="orderList" class="order-list">
+            <li class="empty-msg">لم تُضف أي منتج بعد</li>
+          </ul>
+          <p class="order-total">الإجمالي: <span id="orderTotal">0</span> ر.س</p>
+        </div>
+
+        <!-- نموذج الطلب -->
+        <form class="order-form" id="orderForm">
+
+          <label>
+            الاسم الكامل *
+            <input type="text" id="customerName" required placeholder="اسمك الكامل" />
+          </label>
+
+          <label>
+            رقم الجوال *
+            <input type="tel" id="customerPhone" required placeholder="05xxxxxxxx" />
+          </label>
+
+          <label>
+            طريقة الاستلام *
+            <select id="deliveryMethod" required>
+              <option value="استلام من الصيدلية">استلام من الصيدلية</option>
+              <option value="توصيل للمنزل">توصيل للمنزل</option>
+            </select>
+          </label>
+
+          <label id="addressLabel" style="display:none;">
+            العنوان (للتوصيل)
+            <input type="text" id="customerAddress" placeholder="المدينة - الحي - الشارع" />
+          </label>
+
+          <label>
+            كود الخصم (اختياري)
+            <input type="text" id="couponCode" placeholder="مثال: VIT20" />
+          </label>
+
+          <label>
+            رفع الوصفة الطبية (اختياري)
+            <input type="file" id="prescriptionFile" accept="image/*" />
+            <small>يمكنك رفع صورة الروشتة إذا كان طلبك يحتوي على أدوية بوصفة.</small>
+          </label>
+
+          <label>
+            ملاحظات إضافية
+            <textarea id="orderNotes" rows="3" placeholder="أي تفاصيل تريد إضافتها..."></textarea>
+          </label>
+
+          <button type="submit" class="btn btn-primary btn-block">
+            تأكيد الطلب عبر واتساب
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="footer">
+    <div class="container footer-grid">
+
+      <div>
+        <h3>صيدلية [الاسم]</h3>
+        <p>الصيدلي المسؤول: د. [الاسم]</p>
+        <p>رقم الترخيص: [xxxxxxx]</p>
+        <p>العنوان: [المدينة - الشارع]</p>
+        <p>ساعات العمل: [من - إلى]</p>
+      </div>
+
+      <div>
+        <h3>تواصل معنا</h3>
+        <p>📞 واتساب: <a href="https://wa.me/966XXXXXXXXX">966XXXXXXXXX</a></p>
+        <p>✉️ البريد: info@example.com</p>
+      </div>
+
+      <div>
+        <h3>سياسة الإرجاع</h3>
+        <p>
+          لأسباب صحية وقانونية: لا يمكن إرجاع الأدوية بعد صرفها.
+          يمكن استبدال المنتجات غير الدوائية خلال 3 أيام بشرط عدم فتحها.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="container disclaimer">
+      <p>
+        <strong>تنبيه هام:</strong> هذا الموقع لا يُغني عن الاستشارة الطبية المباشرة.
+        الأدوية التي تستلزم وصفة طبية لا تُصرف إلا بعد تقديم الوصفة والتحقق منها.
+        جميع الأسعار قابلة للتغيير.
+      </p>
+      <p class="copyright">© <span id="year"></span> صيدلية [الاسم]. جميع الحقوق محفوظة.</p>
+    </div>
+  </footer>
+
+  <!-- ==================== FLOATING BUTTONS ==================== -->
+  <a href="https://wa.me/966XXXXXXXXX" class="whatsapp-float" target="_blank" title="تواصل عبر واتساب">💬</a>
+  <button id="toTop" class="to-top" title="أعلى الصفحة">↑</button>
+
+  <!-- ==================== SCRIPTS ==================== -->
+  <script src="js/main.js"></script>
+  <script src="js/booking.js"></script>
+  <script src="js/lang.js"></script>
+
+</body>
+</html>
