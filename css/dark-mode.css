@@ -1,1 +1,71 @@
+/* ============================================================
+   dark-mode.css — الوضع الليلي
+   يعتمد على إعادة تعريف متغيرات CSS فقط
+   ============================================================ */
 
+body.dark {
+  --primary: #10b981;
+  --primary-dark: #059669;
+  --primary-light: #064e3b;
+  --accent: #3b82f6;
+
+  --text: #e5e7eb;
+  --text-light: #9ca3af;
+
+  --bg: #0f172a;
+  --bg-alt: #1e293b;
+  --border: #334155;
+
+  --danger: #f87171;
+
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* خلفية الـ Hero في الوضع الليلي */
+body.dark .hero {
+  background: linear-gradient(135deg, #064e3b, #0f172a);
+}
+
+body.dark .hero-text h1 {
+  color: var(--primary);
+}
+
+/* بطاقات المنتجات */
+body.dark .product-card img {
+  background: var(--bg);
+}
+
+/* العروض */
+body.dark .offers-banner {
+  background: linear-gradient(135deg, #065f46, #064e3b);
+}
+
+/* الفوتر يبقى داكنًا (مناسب أصلًا) */
+body.dark .footer {
+  background: #020617;
+}
+
+/* إشعار Toast */
+body.dark .toast {
+  background: var(--primary);
+}
+
+/* أزرار الكمية */
+body.dark .remove-btn:hover {
+  background: rgba(248, 113, 113, 0.15);
+}
+
+/* حقول الإدخال */
+body.dark .order-form input,
+body.dark .order-form select,
+body.dark .order-form textarea {
+  background: var(--bg-alt);
+  color: var(--text);
+}
+
+/* أيقونة الوضع الليلي */
+body.dark .icon-btn {
+  background: var(--bg-alt);
+  color: var(--text);
+}
