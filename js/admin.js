@@ -322,34 +322,88 @@ function printInvoice(index) {
         <p><strong>طريقة الاستلام:</strong> ${order.method}</p>
         ${order.address ? `<p><strong>العنوان:</strong> ${order.address}</p>` : ""}
       </div>
+function printInvoice(index) {
+  const order = getOrders()[index];
+  if (!order) return;
 
+  const itemsRows = order.items.map(item => `
+    <tr>
+      <td>${item.name}</td>
+      <td>${item.qty}</td>
+      <td>${item.price} ر.ي</td>
+      <td>${item.price * item.qty} ر.ي</td>
+    </tr>
+  `).join("");
+
+  const date = new Date(order.date).toLocaleString("ar-SA");
+
+  // إنشاء إطار مخفي (iframe) بدلاً من نافذة جديدة لضمان العمل على الجوال والكمبيوتر
+  const iframe = document.createElement('iframe');
+  iframe.style.position = 'absolute';
+  iframe.style.width = '0';
+  iframe.style.height = '0';
+  iframe.style.border = 'none';
+  document.body.appendChild(iframe);
+
+  const doc = iframe.contentWindow.document;
+  doc.open();
+  doc.write(`
+    <!DOCTYPE html>
+    <html lang="ar" dir="rtl">
+    <head>
+      <meta charset="UTF-8" />
+      <title>فاتورة - صيدلية المجيدي</title>
+      <style>
+        body { font-family: "Segoe UI", Tahoma, sans-serif; padding: 20px; color: #111; }
+        .header { text-align: center; border-bottom: 3px solid #0e9f6e; padding-bottom: 10px; margin-bottom: 20px; }
+        .header h1 { color: #057a55; margin: 0; font-size: 1.6rem; }
+        .header p { margin: 5px 0; color: #555; }
+        .info p { margin: 6px 0; font-size: 0.95rem; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: right; font-size: 0.9rem; }
+        th { background: #e3f9f0; color: #057a55; }
+        .total { text-align: left; font-size: 1.2rem; font-weight: bold; margin-top: 15px; color: #057a55; }
+        .footer { margin-top: 30px; text-align: center; font-size: 0.8rem; color: #666; border-top: 1px dashed #ccc; padding-top: 10px; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>صيدلية المجيدي</h1>
+        <p>صحتك أمانة بين أيدينا</p>
+        <p>📞 773704939</p>
+      </div>
+      <div class="info">
+        <p><strong>رقم الفاتورة:</strong> #${String(index + 1).padStart(4, "0")}</p>
+        <p><strong>التاريخ:</strong> ${date}</p>
+        <p><strong>العميل:</strong> ${order.name}</p>
+        <p><strong>الجوال:</strong> ${order.phone}</p>
+        <p><strong>طريقة الاستلام:</strong> ${order.method}</p>
+        ${order.address ? `<p><strong>العنوان:</strong> ${order.address}</p>` : ""}
+      </div>
       <table>
         <thead>
-          <tr>
-            <th>المنتج</th>
-            <th>الكمية</th>
-            <th>السعر</th>
-            <th>المجموع</th>
-          </tr>
+          <tr><th>المنتج</th><th>الكمية</th><th>السعر</th><th>المجموع</th></tr>
         </thead>
         <tbody>${itemsRows}</tbody>
       </table>
-
       <div class="total">الإجمالي: ${order.total} ر.ي</div>
       ${order.coupon ? `<p><strong>الكوبون:</strong> ${order.coupon}</p>` : ""}
-
       <div class="footer">
         <p>شكرًا لثقتكم بنا 🌿</p>
         <p>جميع الأدوية مضمونة من مصادر معتمدة</p>
       </div>
-
-      <div class="no-print" style="text-align: center; margin-top: 20px;">
-        <button onclick="window.print()" style="padding: 12px 30px; background: #0e9f6e; color: #fff; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer;">🖨️ طباعة</button>
-      </div>
     </body>
     </html>
   `);
-  printWindow.document.close();
+  doc.close();
+
+  // انتظار بسيط لتحميل الإطار ثم فتح نافذة الطباعة
+  setTimeout(() => {
+    iframe.contentWindow.focus();
+    iframe.contentWindow.print();
+    // إزالة الإطار بعد الطباعة أو الإلغاء
+    setTimeout(() => document.body.removeChild(iframe), 2000);
+  }, 500);
 }
 
 /* ---------------- الإحصائيات ---------------- */
