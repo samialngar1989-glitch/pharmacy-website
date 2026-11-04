@@ -363,3 +363,79 @@ body.dark .status-ملغي          { background: #7f1d1d; color: #fecaca; }
     flex-direction: column;
   }
 }
+/* ============================================================
+   إضافات جديدة: الملاحظات الداخلية + زر الطباعة
+   ============================================================ */
+
+/* الملاحظات الداخلية */
+.internal-notes {
+  background: #fffbeb;
+  border: 1px dashed #f59e0b;
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-top: 12px;
+}
+
+body.dark .internal-notes {
+  background: #422006;
+  border-color: #78350f;
+}
+
+.internal-notes label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+  color: #92400e;
+}
+
+body.dark .internal-notes label {
+  color: #fde68a;
+}
+
+.internal-notes-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #fcd34d;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-family: inherit;
+  background: #fff;
+  color: var(--text);
+  resize: vertical;
+}
+
+.internal-notes-input:focus {
+  outline: none;
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+}
+
+body.dark .internal-notes-input {
+  background: #1c1917;
+  border-color: #78350f;
+  color: var(--text);
+}
+
+/* زر الطباعة */
+.btn-print-order {
+  background: transparent;
+  color: #3b82f6;
+  border: 1px solid #3b82f6;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.btn-print-order:hover {
+  background: #3b82f6;
+  color: #fff;
+}
+
+/* زر الصوت */
+#soundToggleBtn {
+  font-size: 1.1rem;
+  transition: opacity 0.2s;
+}
