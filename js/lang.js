@@ -1,5 +1,6 @@
 /* ============================================================
    lang.js — نظام الترجمة الكاملة (عربي / إنجليزي)
+   صيدلية المجيدي
    ============================================================ */
 
 const langBtn = document.getElementById("langBtn");
@@ -12,18 +13,15 @@ function applyLanguage(lang) {
   document.documentElement.lang = lang;
   document.documentElement.dir = isEn ? "ltr" : "rtl";
 
-  // 2) النصوص
+  // 2) النصوص العادية
   document.querySelectorAll("[data-ar]").forEach(el => {
     const ar = el.dataset.ar;
     const en = el.dataset.en;
     if (!ar && !en) return;
 
-    // استثناء العناصر التي تحتوي على عناصر فرعية (مثل disclaimer)
     if (el.children.length === 0) {
       el.textContent = isEn ? (en || ar) : ar;
     } else {
-      // إذا كان العنصر يحتوي على عناصر داخلية (مثل <strong>)
-      // نستبدل فقط العقد النصية المباشرة
       replaceDirectText(el, isEn ? (en || ar) : ar);
     }
   });
@@ -41,7 +39,7 @@ function applyLanguage(lang) {
     document.title = isEn ? (title.dataset.en || title.dataset.ar) : title.dataset.ar;
   }
 
-  // 5) خيارات القائمة المنسدلة (select)
+  // 5) خيارات القائمة المنسدلة
   document.querySelectorAll("select option[data-ar]").forEach(opt => {
     const ar = opt.dataset.ar;
     const en = opt.dataset.en;
@@ -54,26 +52,23 @@ function applyLanguage(lang) {
   // 7) حفظ الاختيار
   localStorage.setItem("pharmacy_lang", lang);
 
-  // 8) إبلاغ booking.js بتغيير اللغة (لتحديث أسماء المنتجات في السلة)
+  // 8) إبلاغ booking.js
   window.dispatchEvent(new CustomEvent("languageChanged", { detail: { lang } }));
 }
 
 /* ---------------- استبدال النص المباشر فقط ---------------- */
 function replaceDirectText(parent, newText) {
-  // نحذف العقد النصية القديمة ونضيف النص الجديد في البداية
-  // مع الحفاظ على العناصر الفرعية مثل <strong>
   for (const node of Array.from(parent.childNodes)) {
     if (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== "") {
       node.textContent = "";
     }
   }
-  // نضيف النص الجديد قبل أول عنصر فرعي
   const firstChild = parent.firstChild;
   const textNode = document.createTextNode(newText + " ");
   parent.insertBefore(textNode, firstChild);
 }
 
-/* ---------------- الزر ---------------- */
+/* ---------------- زر تبديل اللغة ---------------- */
 if (langBtn) {
   langBtn.addEventListener("click", () => {
     const current = localStorage.getItem("pharmacy_lang") || "ar";
