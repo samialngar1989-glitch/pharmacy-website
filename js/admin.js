@@ -1,19 +1,20 @@
 /* ============================================================
    admin.js — منطق لوحة التحكم
+   صيدلية المجيدي
    ============================================================ */
 
 /* ⚙️ غيّري كلمة المرور هنا */
-const ADMIN_PASSWORD = "pharmacy2025";
+const ADMIN_PASSWORD = "almajidi2025";
 
 /* ---------------- عناصر الصفحة ---------------- */
-const loginScreen  = document.getElementById("loginScreen");
-const adminPanel   = document.getElementById("adminPanel");
-const loginForm    = document.getElementById("loginForm");
-const passwordInput = document.getElementById("passwordInput");
-const loginError   = document.getElementById("loginError");
+const loginScreen    = document.getElementById("loginScreen");
+const adminPanel     = document.getElementById("adminPanel");
+const loginForm      = document.getElementById("loginForm");
+const passwordInput  = document.getElementById("passwordInput");
+const loginError     = document.getElementById("loginError");
 const ordersContainer = document.getElementById("ordersContainer");
-const searchInput  = document.getElementById("searchInput");
-const filterStatus = document.getElementById("filterStatus");
+const searchInput    = document.getElementById("searchInput");
+const filterStatus   = document.getElementById("filterStatus");
 
 /* ---------------- جلسة الدخول ---------------- */
 const SESSION_KEY = "pharmacy_admin_logged";
@@ -87,7 +88,7 @@ function renderOrders() {
   const search = searchInput.value.trim().toLowerCase();
   const status = filterStatus.value;
 
-  // الإحصائيات (من كل الطلبات)
+  // الإحصائيات
   updateStats(orders);
 
   // تصفية
@@ -115,7 +116,7 @@ function buildOrderCard(order) {
   const statusClass = "status-" + order.status.replace(/\s+/g, "-");
 
   const itemsHtml = order.items.map(item =>
-    `<li>${item.name} × ${item.qty} = ${item.price * item.qty} ر.س</li>`
+    `<li>${item.name} × ${item.qty} = ${item.price * item.qty} ر.ي</li>`
   ).join("");
 
   const date = new Date(order.date).toLocaleString("ar-SA", {
@@ -140,7 +141,7 @@ function buildOrderCard(order) {
         ${order.address ? `<p><strong>📍 العنوان:</strong> ${order.address}</p>` : ""}
         <p><strong>🧾 المنتجات:</strong></p>
         <ul class="order-items-list">${itemsHtml}</ul>
-        <p><strong>💰 الإجمالي:</strong> ${order.total} ر.س</p>
+        <p><strong>💰 الإجمالي:</strong> ${order.total} ر.ي</p>
         ${order.coupon ? `<p><strong>🎟️ الكوبون:</strong> ${order.coupon}</p>` : ""}
         ${order.prescription ? `<p><strong>📎 وصفة:</strong> ${order.prescription}</p>` : ""}
         ${order.notes ? `<p><strong>📝 ملاحظات:</strong> ${order.notes}</p>` : ""}
