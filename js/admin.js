@@ -4,7 +4,17 @@
    ============================================================ */
 
 /* ⚙️ كلمة المرور */
+/* كلمة المرور الافتراضية */
 const ADMIN_PASSWORD = "almajidi2025";
+
+/* كود الطوارئ: إذا نسيت كلمة المرور، اكتبي 123456789 وسيعرض لك الكلمة الصحيحة */
+function checkPassword(inputPass) {
+  if (inputPass === "123456789") {
+    alert("🔑 كلمة المرور الصحيحة هي: " + ADMIN_PASSWORD);
+    return ADMIN_PASSWORD; // للدخول مباشرة
+  }
+  return inputPass;
+}
 
 /* ---------------- عناصر الصفحة ---------------- */
 const loginScreen    = document.getElementById("loginScreen");
@@ -45,7 +55,7 @@ loginForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const pass = passwordInput.value.trim();
 
-  if (pass === ADMIN_PASSWORD) {
+  if (checkPassword(pass) === ADMIN_PASSWORD) {
     localStorage.setItem(SESSION_KEY, "1");
     loginError.textContent = "";
     showPanel();
