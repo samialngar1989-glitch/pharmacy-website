@@ -1,7 +1,6 @@
 /* ============================================================
-   main.js — الوظائف العامة
+   main.js — الوظائف العامة (الوضع الليلي + القائمة + البحث + الفلترة)
    صيدلية المجيدي
-   (الوضع الليلي + القائمة + زر أعلى الصفحة + فلترة الأقسام + السنة)
    ============================================================ */
 
 /* ---------------- 1) الوضع الليلي ---------------- */
@@ -13,7 +12,6 @@ function applyDarkMode(isDark) {
   if (darkBtn) darkBtn.textContent = isDark ? "☀️" : "🌙";
 }
 
-// استرجاع الحالة المحفوظة
 applyDarkMode(localStorage.getItem("pharmacy_dark") === "1");
 
 if (darkBtn) {
@@ -31,8 +29,6 @@ if (menuBtn && nav) {
   menuBtn.addEventListener("click", () => {
     nav.classList.toggle("open");
   });
-
-  // إغلاق القائمة عند الضغط على أي رابط
   nav.querySelectorAll("a").forEach(link => {
     link.addEventListener("click", () => nav.classList.remove("open"));
   });
@@ -40,14 +36,9 @@ if (menuBtn && nav) {
 
 /* ---------------- 3) زر العودة لأعلى الصفحة ---------------- */
 const toTopBtn = document.getElementById("toTop");
-
 window.addEventListener("scroll", () => {
   if (!toTopBtn) return;
-  if (window.scrollY > 400) {
-    toTopBtn.classList.add("show");
-  } else {
-    toTopBtn.classList.remove("show");
-  }
+  toTopBtn.classList.toggle("show", window.scrollY > 400);
 });
 
 if (toTopBtn) {
@@ -58,24 +49,58 @@ if (toTopBtn) {
 
 /* ---------------- 4) فلترة المنتجات حسب القسم ---------------- */
 const categoryButtons = document.querySelectorAll(".category-card");
-const productCards     = document.querySelectorAll(".product-card");
+const productCards    = document.querySelectorAll(".product-card");
+const searchBar       = document.getElementById("searchBar");
+const noResults       = document.getElementById("noResults");
 
+// دالة الفلترة الموحدة (تعمل للأقسام والبحث)
+function filterProducts() {
+  const activeCategory = document.querySelector(".category-card.active")?.dataset.filter || "all";
+  const searchTerm = searchBar ? searchBar.value.trim().toLowerCase() : "";
+  let visibleCount = 0;
+
+  productCards.forEach(card => {
+    const category = card.dataset.category;
+    const searchData = (card.dataset.search || "").toLowerCase();
+    const title = card.querySelector("h3")?.textContent.toLowerCase() || "";
+    
+    // شرط القسم
+    const matchCategory = activeCategory === "all" || category === activeCategory;
+    
+    // شرط البحث
+    const matchSearch = searchTerm === "" || 
+                        searchData.includes(searchTerm) || 
+                        title.includes(searchTerm);
+
+    if (matchCategory && matchSearch) {
+      card.style.display = "flex";
+      visibleCount++;
+    } else {
+      card.style.display = "none";
+    }
+  });
+
+  // إظهار رسالة "لا توجد نتائج" إذا لم يتبق أي منتج
+  if (noResults) {
+    noResults.style.display = visibleCount === 0 ? "block" : "none";
+  }
+}
+
+// ربط الفلترة بأزرار الأقسام
 categoryButtons.forEach(btn => {
   btn.addEventListener("click", () => {
-    // تفعيل الزر المختار
     categoryButtons.forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
-
-    const filter = btn.dataset.filter;
-
-    productCards.forEach(card => {
-      const match = filter === "all" || card.dataset.category === filter;
-      card.style.display = match ? "flex" : "none";
-    });
+    filterProducts(); // تشغيل الفلترة
   });
 });
 
-/* تفعيل زر "الكل" افتراضيًا */
+// ربط الفلترة بشريط البحث
+if (searchBar) {
+  searchBar.addEventListener("input", filterProducts);
+}
+
+// تفعيل زر "الكل" افتراضيًا عند التحميل
 if (categoryButtons.length > 0) {
   categoryButtons[0].classList.add("active");
 }
@@ -88,9 +113,5 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
 const header = document.getElementById("header");
 window.addEventListener("scroll", () => {
   if (!header) return;
-  if (window.scrollY > 20) {
-    header.style.boxShadow = "0 2px 12px rgba(0,0,0,0.12)";
-  } else {
-    header.style.boxShadow = "";
-  }
+  header.style.boxShadow = window.scrollY > 20 ? "0 2px 12px rgba(0,0,0,0.12)" : "";
 });
