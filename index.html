@@ -11,6 +11,16 @@
 </head>
 <body>
 
+  <!-- ==================== شريط الإعلانات المتحرك ==================== -->
+  <div class="ticker-bar">
+    <div class="ticker-content">
+      <span data-ar="🚚 توصيل مجاني للطلبات فوق 5000 ريال | 🎁 خصم 20% على الفيتامينات بكود VIT20 | 📞 للاستفسار: 773704939"
+            data-en="🚚 Free delivery for orders above 5000 YER | 🎁 20% off Vitamins with code VIT20 | 📞 Call: 773704939">
+        🚚 توصيل مجاني للطلبات فوق 5000 ريال | 🎁 خصم 20% على الفيتامينات بكود VIT20 | 📞 للاستفسار: 773704939
+      </span>
+    </div>
+  </div>
+
   <!-- ==================== HEADER ==================== -->
   <header class="header" id="header">
     <div class="container header-inner">
@@ -30,11 +40,11 @@
       </nav>
 
       <div class="header-actions">
-  <button id="langBtn" class="icon-btn" title="تغيير اللغة">EN</button>
-  <button id="darkBtn" class="icon-btn" title="الوضع الليلي">🌙</button>
-  <a href="admin.html" class="icon-btn admin-link" title="لوحة التحكم">⚙️</a>
-  <button id="menuBtn" class="icon-btn menu-btn" title="القائمة">☰</button>
-</div>
+        <button id="langBtn" class="icon-btn" title="تغيير اللغة">EN</button>
+        <button id="darkBtn" class="icon-btn" title="الوضع الليلي">🌙</button>
+        <a href="admin.html" class="icon-btn admin-link" title="لوحة التحكم">⚙️</a>
+        <button id="menuBtn" class="icon-btn menu-btn" title="القائمة">☰</button>
+      </div>
     </div>
   </header>
 
@@ -84,207 +94,300 @@
       <h2 class="section-title" data-ar="الأدوية والعلاجات" data-en="Medicines & Treatments">الأدوية والعلاجات</h2>
       <p class="section-subtitle" data-ar="منتجات أصلية معتمدة بأسعار مناسبة" data-en="Authentic certified products at fair prices">منتجات أصلية معتمدة بأسعار مناسبة</p>
 
+      <!-- شريط البحث -->
+      <div class="search-wrapper">
+        <input type="text" id="searchBar" 
+               data-placeholder-ar="🔍 ابحث عن دواء (مثال: بنادول، فيتامين)..." 
+               data-placeholder-en="🔍 Search for a medicine..." 
+               placeholder="🔍 ابحث عن دواء (مثال: بنادول، فيتامين)..." />
+      </div>
+
       <div class="products-grid" id="productsGrid">
 
         <!-- ===== مسكنات ===== -->
-        <div class="product-card" data-category="general">
+        <div class="product-card" data-category="general" data-search="بنادول barasitamol paracetamol panadol">
+          <span class="product-badge bestseller" data-ar="الأكثر مبيعًا" data-en="Best Seller">الأكثر مبيعًا</span>
           <img src="images/products/panadol.jpg" alt="بنادول" />
           <h3 data-ar="بنادول إكسترا 500mg" data-en="Panadol Extra 500mg">بنادول إكسترا 500mg</h3>
           <p class="price" data-ar="1200 ر.ي" data-en="1200 YER">1200 ر.ي</p>
-          <button class="btn btn-primary add-to-order"
-                  data-name="بنادول إكسترا 500mg" data-name-en="Panadol Extra 500mg"
-                  data-price="1200"
-                  data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order"
+                    data-name="بنادول إكسترا 500mg" data-name-en="Panadol Extra 500mg"
+                    data-price="1200"
+                    data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: بنادول إكسترا 500mg" 
+               target="_blank" class="btn btn-whatsapp" title="اطلب مباشرة عبر واتساب">💬</a>
+          </div>
         </div>
 
-        <div class="product-card" data-category="general">
+        <div class="product-card" data-category="general" data-search="باراسيتامول paracetamol">
           <img src="images/products/paracetamol.jpg" alt="باراسيتامول" />
           <h3 data-ar="باراسيتامول 500mg" data-en="Paracetamol 500mg">باراسيتامول 500mg</h3>
           <p class="price" data-ar="500 ر.ي" data-en="500 YER">500 ر.ي</p>
-          <button class="btn btn-primary add-to-order"
-                  data-name="باراسيتامول 500mg" data-name-en="Paracetamol 500mg"
-                  data-price="500"
-                  data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order"
+                    data-name="باراسيتامول 500mg" data-name-en="Paracetamol 500mg"
+                    data-price="500"
+                    data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: باراسيتامول 500mg" 
+               target="_blank" class="btn btn-whatsapp" title="اطلب مباشرة عبر واتساب">💬</a>
+          </div>
         </div>
 
-        <div class="product-card" data-category="general">
+        <div class="product-card" data-category="general" data-search="بروفين brufen ibuprofen">
           <img src="images/products/brufen.jpg" alt="بروفين" />
           <h3 data-ar="بروفين 400mg" data-en="Brufen 400mg">بروفين 400mg</h3>
           <p class="price" data-ar="900 ر.ي" data-en="900 YER">900 ر.ي</p>
-          <button class="btn btn-primary add-to-order"
-                  data-name="بروفين 400mg" data-name-en="Brufen 400mg"
-                  data-price="900"
-                  data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order"
+                    data-name="بروفين 400mg" data-name-en="Brufen 400mg"
+                    data-price="900"
+                    data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: بروفين 400mg" 
+               target="_blank" class="btn btn-whatsapp" title="اطلب مباشرة عبر واتساب">💬</a>
+          </div>
         </div>
 
         <!-- ===== مضادات حيوية ===== -->
-        <div class="product-card" data-category="antibiotics">
+        <div class="product-card" data-category="antibiotics" data-search="أموكسيسيلين amoxicillin">
           <img src="images/products/amoxicillin.jpg" alt="أموكسيسيلين" />
           <h3 data-ar="أموكسيسيلين 500mg" data-en="Amoxicillin 500mg">أموكسيسيلين 500mg</h3>
           <p class="price" data-ar="1500 ر.ي" data-en="1500 YER">1500 ر.ي</p>
-          <button class="btn btn-primary add-to-order"
-                  data-name="أموكسيسيلين 500mg" data-name-en="Amoxicillin 500mg"
-                  data-price="1500"
-                  data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order"
+                    data-name="أموكسيسيلين 500mg" data-name-en="Amoxicillin 500mg"
+                    data-price="1500"
+                    data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: أموكسيسيلين 500mg" 
+               target="_blank" class="btn btn-whatsapp" title="اطلب مباشرة عبر واتساب">💬</a>
+          </div>
         </div>
 
-        <div class="product-card" data-category="antibiotics">
+        <div class="product-card" data-category="antibiotics" data-search="أزيثرومايسين azithromycin">
           <img src="images/products/azithromycin.jpg" alt="أزيثرومايسين" />
           <h3 data-ar="أزيثرومايسين 500mg" data-en="Azithromycin 500mg">أزيثرومايسين 500mg</h3>
           <p class="price" data-ar="2500 ر.ي" data-en="2500 YER">2500 ر.ي</p>
-          <button class="btn btn-primary add-to-order"
-                  data-name="أزيثرومايسين 500mg" data-name-en="Azithromycin 500mg"
-                  data-price="2500"
-                  data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order"
+                    data-name="أزيثرومايسين 500mg" data-name-en="Azithromycin 500mg"
+                    data-price="2500"
+                    data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: أزيثرومايسين 500mg" 
+               target="_blank" class="btn btn-whatsapp" title="اطلب مباشرة عبر واتساب">💬</a>
+          </div>
         </div>
 
         <!-- ===== فيتامينات ===== -->
-        <div class="product-card" data-category="vitamins">
+        <div class="product-card" data-category="vitamins" data-search="فيتامين سي vitamin c">
+          <span class="product-badge sale" data-ar="خصم 20%" data-en="20% OFF">خصم 20%</span>
           <img src="images/products/vitamin-c.jpg" alt="فيتامين سي" />
           <h3 data-ar="فيتامين سي 1000mg" data-en="Vitamin C 1000mg">فيتامين سي 1000mg</h3>
           <p class="price" data-ar="1800 ر.ي" data-en="1800 YER">1800 ر.ي</p>
-          <button class="btn btn-primary add-to-order"
-                  data-name="فيتامين سي 1000mg" data-name-en="Vitamin C 1000mg"
-                  data-price="1800"
-                  data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order"
+                    data-name="فيتامين سي 1000mg" data-name-en="Vitamin C 1000mg"
+                    data-price="1800"
+                    data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: فيتامين سي 1000mg" 
+               target="_blank" class="btn btn-whatsapp" title="اطلب مباشرة عبر واتساب">💬</a>
+          </div>
         </div>
 
-        <div class="product-card" data-category="vitamins">
+        <div class="product-card" data-category="vitamins" data-search="فيتامين د vitamin d">
           <img src="images/products/vitamin-d.jpg" alt="فيتامين د" />
           <h3 data-ar="فيتامين د 50000 وحدة" data-en="Vitamin D 50000 IU">فيتامين د 50000 وحدة</h3>
           <p class="price" data-ar="2200 ر.ي" data-en="2200 YER">2200 ر.ي</p>
-          <button class="btn btn-primary add-to-order"
-                  data-name="فيتامين د 50000 وحدة" data-name-en="Vitamin D 50000 IU"
-                  data-price="2200"
-                  data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order"
+                    data-name="فيتامين د 50000 وحدة" data-name-en="Vitamin D 50000 IU"
+                    data-price="2200"
+                    data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: فيتامين د 50000 وحدة" 
+               target="_blank" class="btn btn-whatsapp" title="اطلب مباشرة عبر واتساب">💬</a>
+          </div>
         </div>
 
-        <div class="product-card" data-category="vitamins">
+        <div class="product-card" data-category="vitamins" data-search="حديد فوليك iron folic">
           <img src="images/products/iron.jpg" alt="حديد" />
           <h3 data-ar="أقراص الحديد + فوليك" data-en="Iron + Folic Acid">أقراص الحديد + فوليك</h3>
           <p class="price" data-ar="1600 ر.ي" data-en="1600 YER">1600 ر.ي</p>
-          <button class="btn btn-primary add-to-order"
-                  data-name="أقراص الحديد + فوليك" data-name-en="Iron + Folic Acid"
-                  data-price="1600"
-                  data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order"
+                    data-name="أقراص الحديد + فوليك" data-name-en="Iron + Folic Acid"
+                    data-price="1600"
+                    data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: أقراص الحديد + فوليك" 
+               target="_blank" class="btn btn-whatsapp" title="اطلب مباشرة عبر واتساب">💬</a>
+          </div>
         </div>
 
         <!-- ===== الجهاز الهضمي ===== -->
-        <div class="product-card" data-category="digestive">
+        <div class="product-card" data-category="digestive" data-search="أوميبرازول omeprazole">
           <img src="images/products/omeprazole.jpg" alt="أوميبرازول" />
           <h3 data-ar="أوميبرازول 20mg" data-en="Omeprazole 20mg">أوميبرازول 20mg</h3>
           <p class="price" data-ar="1400 ر.ي" data-en="1400 YER">1400 ر.ي</p>
-          <button class="btn btn-primary add-to-order"
-                  data-name="أوميبرازول 20mg" data-name-en="Omeprazole 20mg"
-                  data-price="1400"
-                  data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order"
+                    data-name="أوميبرازول 20mg" data-name-en="Omeprazole 20mg"
+                    data-price="1400"
+                    data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: أوميبرازول 20mg" 
+               target="_blank" class="btn btn-whatsapp" title="اطلب مباشرة عبر واتساب">💬</a>
+          </div>
         </div>
 
-        <div class="product-card" data-category="digestive">
+        <div class="product-card" data-category="digestive" data-search="مضاد حموضة antacid">
           <img src="images/products/antacid.jpg" alt="مضاد حموضة" />
           <h3 data-ar="شراب مضاد حموضة" data-en="Antacid Syrup">شراب مضاد حموضة</h3>
           <p class="price" data-ar="800 ر.ي" data-en="800 YER">800 ر.ي</p>
-          <button class="btn btn-primary add-to-order"
-                  data-name="شراب مضاد حموضة" data-name-en="Antacid Syrup"
-                  data-price="800"
-                  data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order"
+                    data-name="شراب مضاد حموضة" data-name-en="Antacid Syrup"
+                    data-price="800"
+                    data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: شراب مضاد حموضة" 
+               target="_blank" class="btn btn-whatsapp" title="اطلب مباشرة عبر واتساب">💬</a>
+          </div>
         </div>
 
         <!-- ===== العناية بالبشرة ===== -->
-        <div class="product-card" data-category="skincare">
+        <div class="product-card" data-category="skincare" data-search="واقي شمس sunscreen">
           <img src="images/products/sunscreen.jpg" alt="واقي شمس" />
           <h3 data-ar="واقي شمس SPF 50" data-en="Sunscreen SPF 50">واقي شمس SPF 50</h3>
           <p class="price" data-ar="3500 ر.ي" data-en="3500 YER">3500 ر.ي</p>
-          <button class="btn btn-primary add-to-order"
-                  data-name="واقي شمس SPF 50" data-name-en="Sunscreen SPF 50"
-                  data-price="3500"
-                  data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order"
+                    data-name="واقي شمس SPF 50" data-name-en="Sunscreen SPF 50"
+                    data-price="3500"
+                    data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: واقي شمس SPF 50" 
+               target="_blank" class="btn btn-whatsapp" title="اطلب مباشرة عبر واتساب">💬</a>
+          </div>
         </div>
 
-        <div class="product-card" data-category="skincare">
+        <div class="product-card" data-category="skincare" data-search="مرطب moisturizer">
           <img src="images/products/moisturizer.jpg" alt="مرطب" />
           <h3 data-ar="كريم مرطب للبشرة" data-en="Moisturizing Cream">كريم مرطب للبشرة</h3>
           <p class="price" data-ar="2500 ر.ي" data-en="2500 YER">2500 ر.ي</p>
-          <button class="btn btn-primary add-to-order"
-                  data-name="كريم مرطب للبشرة" data-name-en="Moisturizing Cream"
-                  data-price="2500"
-                  data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order"
+                    data-name="كريم مرطب للبشرة" data-name-en="Moisturizing Cream"
+                    data-price="2500"
+                    data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: كريم مرطب للبشرة" 
+               target="_blank" class="btn btn-whatsapp" title="اطلب مباشرة عبر واتساب">💬</a>
+          </div>
         </div>
 
         <!-- ===== الأم والطفل ===== -->
-        <div class="product-card" data-category="mom-baby">
+        <div class="product-card" data-category="mom-baby" data-search="حليب أطفال baby milk formula">
           <img src="images/products/baby-milk.jpg" alt="حليب أطفال" />
           <h3 data-ar="حليب أطفال 400g" data-en="Baby Milk 400g">حليب أطفال 400g</h3>
           <p class="price" data-ar="4500 ر.ي" data-en="4500 YER">4500 ر.ي</p>
-          <button class="btn btn-primary add-to-order"
-                  data-name="حليب أطفال 400g" data-name-en="Baby Milk 400g"
-                  data-price="4500"
-                  data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order"
+                    data-name="حليب أطفال 400g" data-name-en="Baby Milk 400g"
+                    data-price="4500"
+                    data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: حليب أطفال 400g" 
+               target="_blank" class="btn btn-whatsapp" title="اطلب مباشرة عبر واتساب">💬</a>
+          </div>
         </div>
 
-        <div class="product-card" data-category="mom-baby">
+        <div class="product-card" data-category="mom-baby" data-search="حفاضات diapers">
           <img src="images/products/diapers.jpg" alt="حفاضات" />
           <h3 data-ar="حفاضات أطفال (32 حبة)" data-en="Baby Diapers (32 pcs)">حفاضات أطفال (32 حبة)</h3>
           <p class="price" data-ar="3200 ر.ي" data-en="3200 YER">3200 ر.ي</p>
-          <button class="btn btn-primary add-to-order"
-                  data-name="حفاضات أطفال 32 حبة" data-name-en="Baby Diapers 32 pcs"
-                  data-price="3200"
-                  data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order"
+                    data-name="حفاضات أطفال 32 حبة" data-name-en="Baby Diapers 32 pcs"
+                    data-price="3200"
+                    data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: حفاضات أطفال 32 حبة" 
+               target="_blank" class="btn btn-whatsapp" title="اطلب مباشرة عبر واتساب">💬</a>
+          </div>
         </div>
 
         <!-- ===== أجهزة القياس ===== -->
-        <div class="product-card" data-category="devices">
+        <div class="product-card" data-category="devices" data-search="جهاز ضغط bp monitor pressure">
           <img src="images/products/bp-monitor.jpg" alt="جهاز ضغط" />
           <h3 data-ar="جهاز قياس الضغط الرقمي" data-en="Digital BP Monitor">جهاز قياس الضغط الرقمي</h3>
           <p class="price" data-ar="15000 ر.ي" data-en="15000 YER">15000 ر.ي</p>
-          <button class="btn btn-primary add-to-order"
-                  data-name="جهاز قياس الضغط الرقمي" data-name-en="Digital BP Monitor"
-                  data-price="15000"
-                  data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order"
+                    data-name="جهاز قياس الضغط الرقمي" data-name-en="Digital BP Monitor"
+                    data-price="15000"
+                    data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: جهاز قياس الضغط الرقمي" 
+               target="_blank" class="btn btn-whatsapp" title="اطلب مباشرة عبر واتساب">💬</a>
+          </div>
         </div>
 
-        <div class="product-card" data-category="devices">
+        <div class="product-card" data-category="devices" data-search="جهاز سكر glucometer sugar">
           <img src="images/products/glucometer.jpg" alt="جهاز سكر" />
           <h3 data-ar="جهاز قياس السكر" data-en="Glucometer">جهاز قياس السكر</h3>
           <p class="price" data-ar="12000 ر.ي" data-en="12000 YER">12000 ر.ي</p>
-          <button class="btn btn-primary add-to-order"
-                  data-name="جهاز قياس السكر" data-name-en="Glucometer"
-                  data-price="12000"
-                  data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order"
+                    data-name="جهاز قياس السكر" data-name-en="Glucometer"
+                    data-price="12000"
+                    data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: جهاز قياس السكر" 
+               target="_blank" class="btn btn-whatsapp" title="اطلب مباشرة عبر واتساب">💬</a>
+          </div>
         </div>
 
         <!-- ===== مستلزمات طبية ===== -->
-        <div class="product-card" data-category="supplies">
+        <div class="product-card" data-category="supplies" data-search="كمامات masks">
           <img src="images/products/masks.jpg" alt="كمامات" />
           <h3 data-ar="كمامات طبية (50 حبة)" data-en="Medical Masks (50 pcs)">كمامات طبية (50 حبة)</h3>
           <p class="price" data-ar="1000 ر.ي" data-en="1000 YER">1000 ر.ي</p>
-          <button class="btn btn-primary add-to-order"
-                  data-name="كمامات طبية 50 حبة" data-name-en="Medical Masks 50 pcs"
-                  data-price="1000"
-                  data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order"
+                    data-name="كمامات طبية 50 حبة" data-name-en="Medical Masks 50 pcs"
+                    data-price="1000"
+                    data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: كمامات طبية 50 حبة" 
+               target="_blank" class="btn btn-whatsapp" title="اطلب مباشرة عبر واتساب">💬</a>
+          </div>
         </div>
 
-        <div class="product-card" data-category="supplies">
+        <div class="product-card" data-category="supplies" data-search="ضمادات bandage">
           <img src="images/products/bandage.jpg" alt="ضمادات" />
           <h3 data-ar="ضمادات لاصقة (20 حبة)" data-en="Adhesive Bandages (20)">ضمادات لاصقة (20 حبة)</h3>
           <p class="price" data-ar="600 ر.ي" data-en="600 YER">600 ر.ي</p>
-          <button class="btn btn-primary add-to-order"
-                  data-name="ضمادات لاصقة 20 حبة" data-name-en="Adhesive Bandages 20"
-                  data-price="600"
-                  data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order"
+                    data-name="ضمادات لاصقة 20 حبة" data-name-en="Adhesive Bandages 20"
+                    data-price="600"
+                    data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: ضمادات لاصقة 20 حبة" 
+               target="_blank" class="btn btn-whatsapp" title="اطلب مباشرة عبر واتساب">💬</a>
+          </div>
         </div>
 
-        <div class="product-card" data-category="supplies">
+        <div class="product-card" data-category="supplies" data-search="مطهر بيتادين antiseptic povidone">
           <img src="images/products/antiseptic.jpg" alt="مطهر" />
           <h3 data-ar="مطهر جروح (بيتادين)" data-en="Antiseptic Solution">مطهر جروح (بيتادين)</h3>
           <p class="price" data-ar="900 ر.ي" data-en="900 YER">900 ر.ي</p>
-          <button class="btn btn-primary add-to-order"
-                  data-name="مطهر جروح بيتادين" data-name-en="Antiseptic Solution"
-                  data-price="900"
-                  data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order"
+                    data-name="مطهر جروح بيتادين" data-name-en="Antiseptic Solution"
+                    data-price="900"
+                    data-ar="أضف للطلب" data-en="Add to Order">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: مطهر جروح بيتادين" 
+               target="_blank" class="btn btn-whatsapp" title="اطلب مباشرة عبر واتساب">💬</a>
+          </div>
         </div>
 
       </div>
+
+      <!-- رسالة عدم وجود نتائج بحث -->
+      <p id="noResults" class="no-results" style="display:none;"
+         data-ar="😔 لا توجد نتائج مطابقة لبحثك." data-en="😔 No matching results found.">
+        😔 لا توجد نتائج مطابقة لبحثك.
+      </p>
+
     </div>
   </section>
 
