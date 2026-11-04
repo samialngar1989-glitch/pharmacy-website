@@ -1,20 +1,10 @@
 /* ============================================================
-   admin.js — منطق لوحة التحكم المطور
+   admin.js — منطق لوحة التحكم
    صيدلية المجيدي
    ============================================================ */
 
 /* ⚙️ كلمة المرور */
-/* كلمة المرور الافتراضية */
 const ADMIN_PASSWORD = "almajidi2025";
-
-/* كود الطوارئ: إذا نسيت كلمة المرور، اكتبي 123456789 وسيعرض لك الكلمة الصحيحة */
-function checkPassword(inputPass) {
-  if (inputPass === "123456789") {
-    alert("🔑 كلمة المرور الصحيحة هي: " + ADMIN_PASSWORD);
-    return ADMIN_PASSWORD; // للدخول مباشرة
-  }
-  return inputPass;
-}
 
 /* ---------------- عناصر الصفحة ---------------- */
 const loginScreen    = document.getElementById("loginScreen");
@@ -39,51 +29,58 @@ function checkSession() {
 }
 
 function showLogin() {
-  loginScreen.style.display = "flex";
-  adminPanel.style.display = "none";
+  if (loginScreen) loginScreen.style.display = "flex";
+  if (adminPanel) adminPanel.style.display = "none";
 }
 
 function showPanel() {
-  loginScreen.style.display = "none";
-  adminPanel.style.display = "block";
+  if (loginScreen) loginScreen.style.display = "none";
+  if (adminPanel) adminPanel.style.display = "block";
   renderOrders();
-  startSoundWatcher(); // بدء مراقبة الطلبات الجديدة
+  startSoundWatcher(); 
 }
 
 /* ---------------- نموذج الدخول ---------------- */
-loginForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const pass = passwordInput.value.trim();
+if (loginForm) {
+  loginForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const pass = passwordInput.value.trim();
 
-  if (checkPassword(pass) === ADMIN_PASSWORD) {
-    localStorage.setItem(SESSION_KEY, "1");
-    loginError.textContent = "";
-    showPanel();
-  } else {
-    loginError.textContent = "❌ كلمة المرور غير صحيحة";
-    passwordInput.value = "";
-    passwordInput.focus();
-  }
-});
+    if (pass === ADMIN_PASSWORD) {
+      localStorage.setItem(SESSION_KEY, "1");
+      if (loginError) loginError.textContent = "";
+      showPanel();
+    } else {
+      if (loginError) loginError.textContent = "❌ كلمة المرور غير صحيحة";
+      passwordInput.value = "";
+      passwordInput.focus();
+    }
+  });
+}
 
 /* ---------------- تسجيل الخروج ---------------- */
-document.getElementById("logoutBtn").addEventListener("click", () => {
-  localStorage.removeItem(SESSION_KEY);
-  showLogin();
-  passwordInput.value = "";
-});
+const logoutBtn = document.getElementById("logoutBtn");
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", () => {
+    localStorage.removeItem(SESSION_KEY);
+    showLogin();
+    if (passwordInput) passwordInput.value = "";
+  });
+}
 
 /* ---------------- الوضع الليلي ---------------- */
 const darkBtn = document.getElementById("darkBtn");
 function applyDarkMode(isDark) {
   document.body.classList.toggle("dark", isDark);
   localStorage.setItem("pharmacy_dark", isDark ? "1" : "0");
-  darkBtn.textContent = isDark ? "☀️" : "🌙";
+  if (darkBtn) darkBtn.textContent = isDark ? "☀️" : "🌙";
 }
-applyDarkMode(localStorage.getItem("pharmacy_dark") === "1");
-darkBtn.addEventListener("click", () => {
-  applyDarkMode(!document.body.classList.contains("dark"));
-});
+if (darkBtn) {
+  applyDarkMode(localStorage.getItem("pharmacy_dark") === "1");
+  darkBtn.addEventListener("click", () => {
+    applyDarkMode(!document.body.classList.contains("dark"));
+  });
+}
 
 /* ============================================================
    🔔 التنبيه الصوتي للطلبات الجديدة
@@ -92,49 +89,44 @@ let soundEnabled = localStorage.getItem("admin_sound") !== "0";
 let lastKnownCount = 0;
 
 function updateSoundButton() {
+  if (!soundToggleBtn) return;
   soundToggleBtn.textContent = soundEnabled ? "🔔" : "🔕";
   soundToggleBtn.style.opacity = soundEnabled ? "1" : "0.5";
 }
 updateSoundButton();
 
-soundToggleBtn.addEventListener("click", () => {
-  soundEnabled = !soundEnabled;
-  localStorage.setItem("admin_sound", soundEnabled ? "1" : "0");
-  updateSoundButton();
-  if (soundEnabled) playBeep(); // تجربة الصوت عند التفعيل
-});
+if (soundToggleBtn) {
+  soundToggleBtn.addEventListener("click", () => {
+    soundEnabled = !soundEnabled;
+    localStorage.setItem("admin_sound", soundEnabled ? "1" : "0");
+    updateSoundButton();
+    if (soundEnabled) playBeep(); 
+  });
+}
 
-/* تشغيل صوت رنين بسيط باستخدام Web Audio API */
 function playBeep() {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const oscillator = ctx.createOscillator();
     const gainNode = ctx.createGain();
-
     oscillator.connect(gainNode);
     gainNode.connect(ctx.destination);
-
     oscillator.type = "sine";
     oscillator.frequency.setValueAtTime(880, ctx.currentTime);
     gainNode.gain.setValueAtTime(0.2, ctx.currentTime);
     gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
-
     oscillator.start();
     oscillator.stop(ctx.currentTime + 0.5);
-  } catch (err) {
-    console.warn("الصوت غير مدعوم:", err);
-  }
+  } catch (err) {}
 }
 
-/* مراقبة الطلبات الجديدة كل 5 ثوانٍ */
 function startSoundWatcher() {
   lastKnownCount = getOrders().length;
-
   setInterval(() => {
     const currentCount = getOrders().length;
     if (currentCount > lastKnownCount && soundEnabled) {
       playBeep();
-      setTimeout(playBeep, 300); // رنتان متتاليتان
+      setTimeout(playBeep, 300); 
     }
     lastKnownCount = currentCount;
   }, 5000);
@@ -151,9 +143,10 @@ function saveOrders(orders) {
 
 /* ---------------- عرض الطلبات ---------------- */
 function renderOrders() {
+  if (!ordersContainer) return;
   const orders = getOrders();
-  const search = searchInput.value.trim().toLowerCase();
-  const status = filterStatus.value;
+  const search = searchInput ? searchInput.value.trim().toLowerCase() : "";
+  const status = filterStatus ? filterStatus.value : "all";
 
   updateStats(orders);
 
@@ -211,7 +204,6 @@ function buildOrderCard(order) {
         ${order.notes ? `<p><strong>📝 ملاحظات العميل:</strong> ${order.notes}</p>` : ""}
       </div>
 
-      <!-- ملاحظات داخلية (لا تظهر للعميل) -->
       <div class="internal-notes">
         <label><strong>🔒 ملاحظات داخلية (لك فقط):</strong></label>
         <textarea class="internal-notes-input" data-index="${index}" rows="2" 
@@ -235,7 +227,6 @@ function buildOrderCard(order) {
 
 /* ---------------- ربط أحداث البطاقات ---------------- */
 function attachOrderEvents() {
-  // تغيير الحالة
   document.querySelectorAll(".status-select").forEach(sel => {
     sel.addEventListener("change", (e) => {
       const index = parseInt(e.target.dataset.index, 10);
@@ -246,7 +237,6 @@ function attachOrderEvents() {
     });
   });
 
-  // حفظ الملاحظات الداخلية (تلقائيًا عند الكتابة)
   document.querySelectorAll(".internal-notes-input").forEach(ta => {
     ta.addEventListener("input", (e) => {
       const index = parseInt(e.target.dataset.index, 10);
@@ -256,7 +246,6 @@ function attachOrderEvents() {
     });
   });
 
-  // طباعة الطلب
   document.querySelectorAll(".btn-print-order").forEach(btn => {
     btn.addEventListener("click", (e) => {
       const index = parseInt(e.target.dataset.index, 10);
@@ -264,7 +253,6 @@ function attachOrderEvents() {
     });
   });
 
-  // حذف طلب
   document.querySelectorAll(".btn-delete-order").forEach(btn => {
     btn.addEventListener("click", (e) => {
       const index = parseInt(e.target.dataset.index, 10);
@@ -295,59 +283,6 @@ function printInvoice(index) {
 
   const date = new Date(order.date).toLocaleString("ar-SA");
 
-  const printWindow = window.open("", "_blank");
-  printWindow.document.write(`
-    <!DOCTYPE html>
-    <html lang="ar" dir="rtl">
-    <head>
-      <meta charset="UTF-8" />
-      <title>فاتورة - صيدلية المجيدي</title>
-      <style>
-        body { font-family: "Segoe UI", Tahoma, sans-serif; padding: 30px; max-width: 800px; margin: auto; color: #111; }
-        .header { text-align: center; border-bottom: 3px solid #0e9f6e; padding-bottom: 15px; margin-bottom: 25px; }
-        .header h1 { color: #057a55; margin: 0; font-size: 1.8rem; }
-        .header p { margin: 5px 0; color: #555; }
-        .info { margin-bottom: 20px; }
-        .info p { margin: 6px 0; }
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        th, td { border: 1px solid #ccc; padding: 10px; text-align: right; }
-        th { background: #e3f9f0; color: #057a55; }
-        .total { text-align: left; font-size: 1.3rem; font-weight: bold; margin-top: 20px; color: #057a55; }
-        .footer { margin-top: 40px; text-align: center; font-size: 0.85rem; color: #666; border-top: 1px dashed #ccc; padding-top: 15px; }
-        @media print { body { padding: 10px; } .no-print { display: none; } }
-      </style>
-    </head>
-    <body>
-      <div class="header">
-        <h1>صيدلية المجيدي</h1>
-        <p>صحتك أمانة بين أيدينا</p>
-        <p>📞 773704939</p>
-      </div>
-
-      <div class="info">
-        <p><strong>رقم الفاتورة:</strong> #${String(index + 1).padStart(4, "0")}</p>
-        <p><strong>التاريخ:</strong> ${date}</p>
-        <p><strong>العميل:</strong> ${order.name}</p>
-        <p><strong>الجوال:</strong> ${order.phone}</p>
-        <p><strong>طريقة الاستلام:</strong> ${order.method}</p>
-        ${order.address ? `<p><strong>العنوان:</strong> ${order.address}</p>` : ""}
-      </div>
-function printInvoice(index) {
-  const order = getOrders()[index];
-  if (!order) return;
-
-  const itemsRows = order.items.map(item => `
-    <tr>
-      <td>${item.name}</td>
-      <td>${item.qty}</td>
-      <td>${item.price} ر.ي</td>
-      <td>${item.price * item.qty} ر.ي</td>
-    </tr>
-  `).join("");
-
-  const date = new Date(order.date).toLocaleString("ar-SA");
-
-  // إنشاء إطار مخفي (iframe) بدلاً من نافذة جديدة لضمان العمل على الجوال والكمبيوتر
   const iframe = document.createElement('iframe');
   iframe.style.position = 'absolute';
   iframe.style.width = '0';
@@ -407,72 +342,65 @@ function printInvoice(index) {
   `);
   doc.close();
 
-  // انتظار بسيط لتحميل الإطار ثم فتح نافذة الطباعة
   setTimeout(() => {
     iframe.contentWindow.focus();
     iframe.contentWindow.print();
-    // إزالة الإطار بعد الطباعة أو الإلغاء
     setTimeout(() => document.body.removeChild(iframe), 2000);
   }, 500);
 }
 
 /* ---------------- الإحصائيات ---------------- */
 function updateStats(orders) {
-  document.getElementById("statTotal").textContent = orders.length;
-  document.getElementById("statPending").textContent =
-    orders.filter(o => o.status === "قيد الانتظار").length;
-  document.getElementById("statPreparing").textContent =
-    orders.filter(o => o.status === "قيد التجهيز").length;
-  document.getElementById("statDone").textContent =
-    orders.filter(o => o.status === "تم التسليم").length;
+  const statTotal = document.getElementById("statTotal");
+  const statPending = document.getElementById("statPending");
+  const statPreparing = document.getElementById("statPreparing");
+  const statDone = document.getElementById("statDone");
+
+  if (statTotal) statTotal.textContent = orders.length;
+  if (statPending) statPending.textContent = orders.filter(o => o.status === "قيد الانتظار").length;
+  if (statPreparing) statPreparing.textContent = orders.filter(o => o.status === "قيد التجهيز").length;
+  if (statDone) statDone.textContent = orders.filter(o => o.status === "تم التسليم").length;
 }
 
 /* ---------------- البحث والفلترة ---------------- */
-searchInput.addEventListener("input", renderOrders);
-filterStatus.addEventListener("change", renderOrders);
+if (searchInput) searchInput.addEventListener("input", renderOrders);
+if (filterStatus) filterStatus.addEventListener("change", renderOrders);
 
 /* ---------------- تصدير CSV ---------------- */
-document.getElementById("exportBtn").addEventListener("click", () => {
-  const orders = getOrders();
-  if (orders.length === 0) {
-    alert("لا توجد طلبات لتصديرها.");
-    return;
-  }
-
-  const headers = ["التاريخ", "الاسم", "الجوال", "طريقة الاستلام", "العنوان", "المنتجات", "الإجمالي", "الكوبون", "الوصفة", "ملاحظات العميل", "ملاحظات داخلية", "الحالة"];
-  const rows = orders.map(o => [
-    new Date(o.date).toLocaleString("ar-SA"),
-    o.name,
-    o.phone,
-    o.method,
-    o.address || "",
-    o.items.map(i => `${i.name} × ${i.qty}`).join(" | "),
-    o.total,
-    o.coupon || "",
-    o.prescription || "",
-    o.notes || "",
-    o.internalNotes || "",
-    o.status
-  ]);
-
-  const csvContent = "\uFEFF" + [headers, ...rows]
-    .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(","))
-    .join("\n");
-
-  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = `orders-${Date.now()}.csv`;
-  link.click();
-});
+const exportBtn = document.getElementById("exportBtn");
+if (exportBtn) {
+  exportBtn.addEventListener("click", () => {
+    const orders = getOrders();
+    if (orders.length === 0) {
+      alert("لا توجد طلبات لتصديرها.");
+      return;
+    }
+    const headers = ["التاريخ", "الاسم", "الجوال", "طريقة الاستلام", "العنوان", "المنتجات", "الإجمالي", "الكوبون", "الوصفة", "ملاحظات العميل", "ملاحظات داخلية", "الحالة"];
+    const rows = orders.map(o => [
+      new Date(o.date).toLocaleString("ar-SA"),
+      o.name, o.phone, o.method, o.address || "",
+      o.items.map(i => `${i.name} × ${i.qty}`).join(" | "),
+      o.total, o.coupon || "", o.prescription || "", o.notes || "", o.internalNotes || "", o.status
+    ]);
+    const csvContent = "\uFEFF" + [headers, ...rows].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `orders-${Date.now()}.csv`;
+    link.click();
+  });
+}
 
 /* ---------------- حذف الكل ---------------- */
-document.getElementById("clearAllBtn").addEventListener("click", () => {
-  if (getOrders().length === 0) return;
-  if (!confirm("⚠️ سيتم حذف جميع الطلبات نهائيًا. متأكد؟")) return;
-  saveOrders([]);
-  renderOrders();
-});
+const clearAllBtn = document.getElementById("clearAllBtn");
+if (clearAllBtn) {
+  clearAllBtn.addEventListener("click", () => {
+    if (getOrders().length === 0) return;
+    if (!confirm("⚠️ سيتم حذف جميع الطلبات نهائيًا. متأكد؟")) return;
+    saveOrders([]);
+    renderOrders();
+  });
+}
 
 /* ---------------- التشغيل ---------------- */
 checkSession();
