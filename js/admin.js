@@ -1,9 +1,9 @@
 /* ============================================================
-   admin.js — منطق لوحة التحكم
+   admin.js — منطق لوحة التحكم المطور
    صيدلية المجيدي
    ============================================================ */
 
-/* ⚙️ غيّري كلمة المرور هنا */
+/* ⚙️ كلمة المرور */
 const ADMIN_PASSWORD = "almajidi2025";
 
 /* ---------------- عناصر الصفحة ---------------- */
@@ -15,6 +15,7 @@ const loginError     = document.getElementById("loginError");
 const ordersContainer = document.getElementById("ordersContainer");
 const searchInput    = document.getElementById("searchInput");
 const filterStatus   = document.getElementById("filterStatus");
+const soundToggleBtn = document.getElementById("soundToggleBtn");
 
 /* ---------------- جلسة الدخول ---------------- */
 const SESSION_KEY = "pharmacy_admin_logged";
@@ -36,6 +37,7 @@ function showPanel() {
   loginScreen.style.display = "none";
   adminPanel.style.display = "block";
   renderOrders();
+  startSoundWatcher(); // بدء مراقبة الطلبات الجديدة
 }
 
 /* ---------------- نموذج الدخول ---------------- */
@@ -73,7 +75,62 @@ darkBtn.addEventListener("click", () => {
   applyDarkMode(!document.body.classList.contains("dark"));
 });
 
-/* ---------------- قراءة الطلبات ---------------- */
+/* ============================================================
+   🔔 التنبيه الصوتي للطلبات الجديدة
+   ============================================================ */
+let soundEnabled = localStorage.getItem("admin_sound") !== "0";
+let lastKnownCount = 0;
+
+function updateSoundButton() {
+  soundToggleBtn.textContent = soundEnabled ? "🔔" : "🔕";
+  soundToggleBtn.style.opacity = soundEnabled ? "1" : "0.5";
+}
+updateSoundButton();
+
+soundToggleBtn.addEventListener("click", () => {
+  soundEnabled = !soundEnabled;
+  localStorage.setItem("admin_sound", soundEnabled ? "1" : "0");
+  updateSoundButton();
+  if (soundEnabled) playBeep(); // تجربة الصوت عند التفعيل
+});
+
+/* تشغيل صوت رنين بسيط باستخدام Web Audio API */
+function playBeep() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(ctx.destination);
+
+    oscillator.type = "sine";
+    oscillator.frequency.setValueAtTime(880, ctx.currentTime);
+    gainNode.gain.setValueAtTime(0.2, ctx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+
+    oscillator.start();
+    oscillator.stop(ctx.currentTime + 0.5);
+  } catch (err) {
+    console.warn("الصوت غير مدعوم:", err);
+  }
+}
+
+/* مراقبة الطلبات الجديدة كل 5 ثوانٍ */
+function startSoundWatcher() {
+  lastKnownCount = getOrders().length;
+
+  setInterval(() => {
+    const currentCount = getOrders().length;
+    if (currentCount > lastKnownCount && soundEnabled) {
+      playBeep();
+      setTimeout(playBeep, 300); // رنتان متتاليتان
+    }
+    lastKnownCount = currentCount;
+  }, 5000);
+}
+
+/* ---------------- قراءة وحفظ الطلبات ---------------- */
 function getOrders() {
   return JSON.parse(localStorage.getItem("pharmacy_orders") || "[]");
 }
@@ -88,10 +145,8 @@ function renderOrders() {
   const search = searchInput.value.trim().toLowerCase();
   const status = filterStatus.value;
 
-  // الإحصائيات
   updateStats(orders);
 
-  // تصفية
   const filtered = orders.filter(order => {
     const matchSearch = !search ||
       order.name.toLowerCase().includes(search) ||
@@ -100,7 +155,6 @@ function renderOrders() {
     return matchSearch && matchStatus;
   });
 
-  // عرض
   if (filtered.length === 0) {
     ordersContainer.innerHTML = `<p class="empty-state">لا توجد طلبات مطابقة.</p>`;
     return;
@@ -144,7 +198,14 @@ function buildOrderCard(order) {
         <p><strong>💰 الإجمالي:</strong> ${order.total} ر.ي</p>
         ${order.coupon ? `<p><strong>🎟️ الكوبون:</strong> ${order.coupon}</p>` : ""}
         ${order.prescription ? `<p><strong>📎 وصفة:</strong> ${order.prescription}</p>` : ""}
-        ${order.notes ? `<p><strong>📝 ملاحظات:</strong> ${order.notes}</p>` : ""}
+        ${order.notes ? `<p><strong>📝 ملاحظات العميل:</strong> ${order.notes}</p>` : ""}
+      </div>
+
+      <!-- ملاحظات داخلية (لا تظهر للعميل) -->
+      <div class="internal-notes">
+        <label><strong>🔒 ملاحظات داخلية (لك فقط):</strong></label>
+        <textarea class="internal-notes-input" data-index="${index}" rows="2" 
+                  placeholder="مثال: العميل يفضل الاتصال مساءً...">${order.internalNotes || ""}</textarea>
       </div>
 
       <div class="order-actions">
@@ -155,6 +216,7 @@ function buildOrderCard(order) {
           <option value="تم التسليم"    ${order.status === "تم التسليم"    ? "selected" : ""}>تم التسليم</option>
           <option value="ملغي"          ${order.status === "ملغي"          ? "selected" : ""}>ملغي</option>
         </select>
+        <button class="btn-print-order" data-index="${index}">🖨️ طباعة</button>
         <button class="btn-delete-order" data-index="${index}">🗑 حذف</button>
       </div>
     </div>
@@ -174,6 +236,24 @@ function attachOrderEvents() {
     });
   });
 
+  // حفظ الملاحظات الداخلية (تلقائيًا عند الكتابة)
+  document.querySelectorAll(".internal-notes-input").forEach(ta => {
+    ta.addEventListener("input", (e) => {
+      const index = parseInt(e.target.dataset.index, 10);
+      const orders = getOrders();
+      orders[index].internalNotes = e.target.value;
+      saveOrders(orders);
+    });
+  });
+
+  // طباعة الطلب
+  document.querySelectorAll(".btn-print-order").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      const index = parseInt(e.target.dataset.index, 10);
+      printInvoice(index);
+    });
+  });
+
   // حذف طلب
   document.querySelectorAll(".btn-delete-order").forEach(btn => {
     btn.addEventListener("click", (e) => {
@@ -185,6 +265,91 @@ function attachOrderEvents() {
       renderOrders();
     });
   });
+}
+
+/* ============================================================
+   🖨️ طباعة الفاتورة
+   ============================================================ */
+function printInvoice(index) {
+  const order = getOrders()[index];
+  if (!order) return;
+
+  const itemsRows = order.items.map(item => `
+    <tr>
+      <td>${item.name}</td>
+      <td>${item.qty}</td>
+      <td>${item.price} ر.ي</td>
+      <td>${item.price * item.qty} ر.ي</td>
+    </tr>
+  `).join("");
+
+  const date = new Date(order.date).toLocaleString("ar-SA");
+
+  const printWindow = window.open("", "_blank");
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html lang="ar" dir="rtl">
+    <head>
+      <meta charset="UTF-8" />
+      <title>فاتورة - صيدلية المجيدي</title>
+      <style>
+        body { font-family: "Segoe UI", Tahoma, sans-serif; padding: 30px; max-width: 800px; margin: auto; color: #111; }
+        .header { text-align: center; border-bottom: 3px solid #0e9f6e; padding-bottom: 15px; margin-bottom: 25px; }
+        .header h1 { color: #057a55; margin: 0; font-size: 1.8rem; }
+        .header p { margin: 5px 0; color: #555; }
+        .info { margin-bottom: 20px; }
+        .info p { margin: 6px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: right; }
+        th { background: #e3f9f0; color: #057a55; }
+        .total { text-align: left; font-size: 1.3rem; font-weight: bold; margin-top: 20px; color: #057a55; }
+        .footer { margin-top: 40px; text-align: center; font-size: 0.85rem; color: #666; border-top: 1px dashed #ccc; padding-top: 15px; }
+        @media print { body { padding: 10px; } .no-print { display: none; } }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>صيدلية المجيدي</h1>
+        <p>صحتك أمانة بين أيدينا</p>
+        <p>📞 773704939</p>
+      </div>
+
+      <div class="info">
+        <p><strong>رقم الفاتورة:</strong> #${String(index + 1).padStart(4, "0")}</p>
+        <p><strong>التاريخ:</strong> ${date}</p>
+        <p><strong>العميل:</strong> ${order.name}</p>
+        <p><strong>الجوال:</strong> ${order.phone}</p>
+        <p><strong>طريقة الاستلام:</strong> ${order.method}</p>
+        ${order.address ? `<p><strong>العنوان:</strong> ${order.address}</p>` : ""}
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>المنتج</th>
+            <th>الكمية</th>
+            <th>السعر</th>
+            <th>المجموع</th>
+          </tr>
+        </thead>
+        <tbody>${itemsRows}</tbody>
+      </table>
+
+      <div class="total">الإجمالي: ${order.total} ر.ي</div>
+      ${order.coupon ? `<p><strong>الكوبون:</strong> ${order.coupon}</p>` : ""}
+
+      <div class="footer">
+        <p>شكرًا لثقتكم بنا 🌿</p>
+        <p>جميع الأدوية مضمونة من مصادر معتمدة</p>
+      </div>
+
+      <div class="no-print" style="text-align: center; margin-top: 20px;">
+        <button onclick="window.print()" style="padding: 12px 30px; background: #0e9f6e; color: #fff; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer;">🖨️ طباعة</button>
+      </div>
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
 }
 
 /* ---------------- الإحصائيات ---------------- */
@@ -210,7 +375,7 @@ document.getElementById("exportBtn").addEventListener("click", () => {
     return;
   }
 
-  const headers = ["التاريخ", "الاسم", "الجوال", "طريقة الاستلام", "العنوان", "المنتجات", "الإجمالي", "الكوبون", "الوصفة", "ملاحظات", "الحالة"];
+  const headers = ["التاريخ", "الاسم", "الجوال", "طريقة الاستلام", "العنوان", "المنتجات", "الإجمالي", "الكوبون", "الوصفة", "ملاحظات العميل", "ملاحظات داخلية", "الحالة"];
   const rows = orders.map(o => [
     new Date(o.date).toLocaleString("ar-SA"),
     o.name,
@@ -222,6 +387,7 @@ document.getElementById("exportBtn").addEventListener("click", () => {
     o.coupon || "",
     o.prescription || "",
     o.notes || "",
+    o.internalNotes || "",
     o.status
   ]);
 
