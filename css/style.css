@@ -893,3 +893,19 @@ button {
     right: 16px;
   }
 }
+/* زر لوحة التحكم في الهيدر */
+.admin-link {
+  background: var(--primary-light) !important;
+  color: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
+.admin-link:hover {
+  background: var(--primary) !important;
+  color: #fff !important;
+}
+
+body.dark .admin-link {
+  background: var(--bg-alt) !important;
+  color: var(--primary) !important;
+}
