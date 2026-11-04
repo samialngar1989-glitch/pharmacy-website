@@ -234,17 +234,21 @@ function attachEvents() {
 /* ============================================================
    🖨️ الطباعة (النسخة المضمونة للجوال والكمبيوتر)
    ============================================================ */
+/* ============================================================
+   🖨️ الطباعة (مع الشعار والختم)
+   ============================================================ */
 function printInvoice(index) {
   const order = getOrders()[index];
   if (!order) return;
 
-  // إنشاء نافذة طباعة جديدة
   const printWindow = window.open('', '_blank', 'width=800,height=600');
-  
   if (!printWindow) {
-    alert("يرجى السماح بالنوافذ المنبثقة (Pop-ups) في المتصفح للطباعة.");
+    alert("يرجى السماح بالنوافذ المنبثقة (Pop-ups) للطباعة.");
     return;
   }
+
+  // رابط الشعار (تأكد من رفعه في مجلد images على GitHub)
+  const logoUrl = "https://samialngar1989-glitch.github.io/pharmacy-website/images/logo.png";
 
   const itemsHtml = order.items.map(item => `
     <tr>
@@ -262,31 +266,66 @@ function printInvoice(index) {
       <meta charset="UTF-8">
       <title>فاتورة #${index + 1}</title>
       <style>
-        body { font-family: Arial, sans-serif; padding: 20px; color: #000; }
-        .header { text-align: center; border-bottom: 2px solid #0e9f6e; padding-bottom: 10px; margin-bottom: 20px; }
-        h1 { color: #0e9f6e; margin: 0; font-size: 24px; }
+        body { font-family: Arial, sans-serif; padding: 30px; color: #000; max-width: 800px; margin: auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #0e9f6e; padding-bottom: 15px; margin-bottom: 20px; }
+        .header-info h1 { color: #0e9f6e; margin: 0; font-size: 26px; }
+        .header-info p { margin: 5px 0; color: #333; font-size: 14px; }
+        .logo img { width: 80px; height: 80px; object-fit: contain; }
+        .customer-info { display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 14px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #000; padding: 8px; text-align: right; }
+        th, td { border: 1px solid #000; padding: 10px; text-align: right; font-size: 14px; }
         th { background: #f0f0f0; }
         .total { text-align: left; font-weight: bold; font-size: 18px; margin-top: 15px; }
-        .info { margin-bottom: 20px; line-height: 1.6; }
+        .footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 50px; }
+        .stamp { text-align: center; }
+        .stamp img { width: 120px; opacity: 0.8; }
+        .stamp p { margin-top: 5px; font-weight: bold; font-size: 14px; }
+        .signature { text-align: center; font-size: 14px; }
       </style>
     </head>
     <body>
       <div class="header">
-        <h1>صيدلية المجيدي</h1>
-        <p>هاتف: 773704939</p>
+        <div class="header-info">
+          <h1>صيدلية المجيدي</h1>
+          <p><strong>د. سامي محمد احمد</strong></p>
+          <p>رقم الترخيص: 80808080</p>
+          <p>هاتف: 773704939</p>
+        </div>
+        <div class="logo">
+          <img src="${logoUrl}" alt="شعار الصيدلية">
+        </div>
       </div>
-      <div class="info">
-        <p><strong>العميل:</strong> ${order.name}</p>
-        <p><strong>الجوال:</strong> ${order.phone}</p>
-        <p><strong>طريقة الاستلام:</strong> ${order.method}</p>
+
+      <div class="customer-info">
+        <div>
+          <p><strong>العميل:</strong> ${order.name}</p>
+          <p><strong>الجوال:</strong> ${order.phone}</p>
+        </div>
+        <div>
+          <p><strong>التاريخ:</strong> ${new Date(order.date).toLocaleString("ar-SA")}</p>
+          <p><strong>طريقة الاستلام:</strong> ${order.method}</p>
+        </div>
       </div>
+
       <table>
         <tr><th>المنتج</th><th>الكمية</th><th>السعر</th><th>المجموع</th></tr>
         ${itemsHtml}
       </table>
+      
       <div class="total">الإجمالي: ${order.total} ر.ي</div>
+
+      <div class="footer">
+        <div class="stamp">
+          <!-- هنا يظهر الختم (يمكنك رفع صورة ختمك بنفس الطريقة وتغيير الاسم) -->
+          <img src="https://samialngar1989-glitch.github.io/pharmacy-website/images/stamp.png" alt="ختم الصيدلية" style="border-radius: 50%; padding: 5px;">
+          <p>ختم الصيدلية</p>
+        </div>
+        <div class="signature">
+          <p>توقيع المستلم: ..............................</p>
+          <p>شكراً لتعاملكم معنا 🌿</p>
+        </div>
+      </div>
+
       <script>
         window.onload = function() {
           window.print();
