@@ -1,5 +1,5 @@
 /* ============================================================
-   booking.js — سلة الطلب وإرسال البيانات لجوجل شيت
+   booking.js — عرض السلة وإرسال الطلب لجوجل شيت
    ============================================================ */
 const API_URL = "https://script.google.com/macros/s/AKfycbxtyvD8zQv2IsnaX0tYL8f0npfUJv8A7SVBTHeklRoE9yeq-M9r3DSvVnO5XDDXheVw-g/exec";
 const WHATSAPP_NUMBER = "967773704939";
@@ -11,10 +11,19 @@ const deliverySel = document.getElementById("deliveryMethod");
 const addressLabel = document.getElementById("addressLabel");
 const addressInput = document.getElementById("customerAddress");
 
-let cart = [];
+function getCart() {
+  return JSON.parse(localStorage.getItem("pharmacy_cart") || "[]");
+}
 
+function saveCart(cart) {
+  localStorage.setItem("pharmacy_cart", JSON.stringify(cart));
+  renderCart();
+}
+
+/* ---------------- عرض السلة ---------------- */
 function renderCart() {
   if (!orderListEl) return;
+  const cart = getCart();
   orderListEl.innerHTML = "";
 
   if (cart.length === 0) {
@@ -23,46 +32,45 @@ function renderCart() {
     return;
   }
 
+  let total = 0;
   cart.forEach((item, index) => {
+    total += item.price * item.qty;
     const li = document.createElement("li");
     li.className = "order-item";
     li.innerHTML = `
       <span class="item-name">${item.name}</span>
       <span class="item-qty">
-        <button type="button" class="qty-btn" data-action="dec" data-index="${index}">−</button>
+        <button type="button" class="qty-btn" onclick="changeQty(${index}, -1)">−</button>
         <span>${item.qty}</span>
-        <button type="button" class="qty-btn" data-action="inc" data-index="${index}">+</button>
+        <button type="button" class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
       </span>
       <span class="item-price">${item.price * item.qty} ر.ي</span>
-      <button type="button" class="remove-btn" data-action="remove" data-index="${index}">✕</button>
+      <button type="button" class="remove-btn" onclick="removeFromCart(${index})">✕</button>
     `;
     orderListEl.appendChild(li);
   });
 
-  if (orderTotalEl) orderTotalEl.textContent = calculateTotal();
+  if (orderTotalEl) orderTotalEl.textContent = total;
 }
 
-function calculateTotal() {
-  return cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-}
+/* ---------------- تعديل السلة ---------------- */
+window.changeQty = function(index, change) {
+  let cart = getCart();
+  cart[index].qty += change;
+  if (cart[index].qty <= 0) cart.splice(index, 1);
+  saveCart(cart);
+};
 
-if (orderListEl) {
-  orderListEl.addEventListener("click", (e) => {
-    const btn = e.target.closest("button");
-    if (!btn) return;
-    const index = parseInt(btn.dataset.index, 10);
-    const action = btn.dataset.action;
+window.removeFromCart = function(index) {
+  let cart = getCart();
+  cart.splice(index, 1);
+  saveCart(cart);
+};
 
-    if (action === "inc") cart[index].qty += 1;
-    if (action === "dec") {
-      cart[index].qty -= 1;
-      if (cart[index].qty <= 0) cart.splice(index, 1);
-    }
-    if (action === "remove") cart.splice(index, 1);
-    renderCart();
-  });
-}
+// الاستماع لتحديثات main.js
+window.addEventListener("cartUpdated", renderCart);
 
+/* ---------------- حقول التوصيل ---------------- */
 if (deliverySel && addressLabel && addressInput) {
   deliverySel.addEventListener("change", () => {
     const isDelivery = deliverySel.value === "توصيل للمنزل";
@@ -71,13 +79,15 @@ if (deliverySel && addressLabel && addressInput) {
   });
 }
 
-/* إرسال الطلب */
+/* ---------------- إرسال الطلب ---------------- */
 if (orderForm) {
   orderForm.addEventListener("submit", async (e) => {
     e.preventDefault();
+    const cart = getCart();
 
     if (cart.length === 0) {
-      showToast("⚠️ أضف منتجًا واحدًا على الأقل قبل تأكيد الطلب", true);
+      if (typeof showToast === "function") showToast("⚠️ أضف منتجًا واحدًا على الأقل", true);
+      else alert("⚠️ أضف منتجًا واحدًا على الأقل");
       return;
     }
 
@@ -89,32 +99,28 @@ if (orderForm) {
     const notes = document.getElementById("orderNotes").value.trim();
     const file = document.getElementById("prescriptionFile").files[0];
 
-    if (!name || !phone) return showToast("⚠️ يرجى إدخال الاسم ورقم الجوال", true);
-    if (method === "توصيل للمنزل" && !address) return showToast("⚠️ يرجى إدخال العنوان للتوصيل", true);
-
+    if (!name || !phone) return alert("⚠️ يرجى إدخال الاسم ورقم الجوال");
+    
+    const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
     const submitBtn = orderForm.querySelector("button[type='submit']");
     submitBtn.textContent = "⏳ جاري حفظ الطلب...";
     submitBtn.disabled = true;
 
-    const orderData = {
-      action: "addOrder",
-      order: {
-        name, phone, method, address, coupon, notes,
-        items: cart,
-        total: calculateTotal(),
-        prescription: file ? file.name : null
-      }
-    };
-
     try {
-      // إرسال إلى جوجل شيت
       await fetch(API_URL, {
         method: "POST",
-        body: JSON.stringify(orderData),
-        headers: { "Content-Type": "text/plain;charset=utf-8" } 
+        body: JSON.stringify({
+          action: "addOrder",
+          order: {
+            name, phone, method, address, coupon, notes,
+            items: cart, total,
+            prescription: file ? file.name : null
+          }
+        }),
+        headers: { "Content-Type": "text/plain;charset=utf-8" }
       });
 
-      // بناء رسالة الواتساب
+      // رسالة واتساب
       let msg = "🛒 *طلب جديد من صيدلية المجيدي*\n──────────────────\n";
       msg += `👤 *الاسم:* ${name}\n📱 *الجوال:* ${phone}\n📦 *طريقة الاستلام:* ${method}\n`;
       if (method === "توصيل للمنزل") msg += `📍 *العنوان:* ${address}\n`;
@@ -122,44 +128,31 @@ if (orderForm) {
       cart.forEach((item, i) => {
         msg += `${i + 1}. ${item.name} × ${item.qty} = ${item.price * item.qty} ر.ي\n`;
       });
-      msg += `──────────────────\n💰 *الإجمالي:* ${calculateTotal()} ر.ي\n`;
+      msg += `──────────────────\n💰 *الإجمالي:* ${total} ر.ي\n`;
       if (coupon) msg += `🎟️ *كود الخصم:* ${coupon}\n`;
       if (file) msg += `📎 *وصفة طبية:* ${file.name}\n`;
       if (notes) msg += `📝 *ملاحظات:* ${notes}\n`;
       msg += "──────────────────\n✅ أرجو تأكيد الطلب وشكراً 🙏";
 
       window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
-      showToast("✅ تم حفظ الطلب بنجاح وفتح واتساب");
 
-      setTimeout(() => {
-        orderForm.reset();
-        if (addressLabel) addressLabel.style.display = "none";
-        cart = [];
-        renderCart();
-        submitBtn.textContent = "تأكيد الطلب عبر واتساب";
-        submitBtn.disabled = false;
-      }, 1500);
+      // تفريغ السلة
+      localStorage.removeItem("pharmacy_cart");
+      renderCart();
+      orderForm.reset();
+      if (addressLabel) addressLabel.style.display = "none";
+      
+      if (typeof showToast === "function") showToast("✅ تم إرسال الطلب وفتح واتساب");
 
     } catch (error) {
-      console.error("Error saving order:", error);
-      showToast("❌ حدث خطأ أثناء حفظ الطلب. حاول مرة أخرى.", true);
+      console.error(error);
+      alert("❌ حدث خطأ، حاول مرة أخرى.");
+    } finally {
       submitBtn.textContent = "تأكيد الطلب عبر واتساب";
       submitBtn.disabled = false;
     }
   });
 }
 
-function showToast(text, isError = false) {
-  let toast = document.getElementById("toast");
-  if (!toast) {
-    toast = document.createElement("div");
-    toast.id = "toast";
-    document.body.appendChild(toast);
-  }
-  toast.textContent = text;
-  toast.className = "toast show" + (isError ? " error" : "");
-  clearTimeout(toast._timer);
-  toast._timer = setTimeout(() => (toast.className = "toast"), 3000);
-}
-
-renderCart();
+// تشغيل أولي عند تحميل الصفحة
+document.addEventListener("DOMContentLoaded", renderCart);
