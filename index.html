@@ -10,6 +10,7 @@
 </head>
 <body>
 
+  <!-- شريط الإعلانات -->
   <div class="ticker-bar">
     <div class="ticker-content">
       <span data-ar="🚚 توصيل مجاني للطلبات فوق 5000 ريال | 🎁 خصم 20% على الفيتامينات بكود VIT20 | 📞 للاستفسار: 773704939" data-en="🚚 Free delivery above 5000 YER | 🎁 20% off Vitamins code VIT20 | 📞 Call: 773704939">
@@ -18,6 +19,7 @@
     </div>
   </div>
 
+  <!-- الهيدر -->
   <header class="header" id="header">
     <div class="container header-inner">
       <a href="#home" class="logo">
@@ -42,6 +44,7 @@
     </div>
   </header>
 
+  <!-- الواجهة -->
   <section class="hero" id="home">
     <div class="container hero-inner">
       <div class="hero-text">
@@ -67,7 +70,11 @@
         <button class="category-card" data-filter="general" data-ar="مسكنات" data-en="Painkillers">مسكنات</button>
         <button class="category-card" data-filter="antibiotics" data-ar="مضادات حيوية" data-en="Antibiotics">مضادات حيوية</button>
         <button class="category-card" data-filter="vitamins" data-ar="فيتامينات" data-en="Vitamins">فيتامينات</button>
-        <button class="category-card" data-filter="devices" data-ar="أجهزة" data-en="Devices">أجهزة</button>
+        <button class="category-card" data-filter="digestive" data-ar="الجهاز الهضمي" data-en="Digestive">الجهاز الهضمي</button>
+        <button class="category-card" data-filter="skincare" data-ar="العناية بالبشرة" data-en="Skincare">العناية بالبشرة</button>
+        <button class="category-card" data-filter="mom-baby" data-ar="الأم والطفل" data-en="Mom & Baby">الأم والطفل</button>
+        <button class="category-card" data-filter="devices" data-ar="أجهزة القياس" data-en="Devices">أجهزة القياس</button>
+        <button class="category-card" data-filter="supplies" data-ar="مستلزمات طبية" data-en="Medical Supplies">مستلزمات طبية</button>
       </div>
     </div>
   </section>
@@ -83,7 +90,7 @@
 
       <div class="products-grid" id="productsGrid">
         
-        <!-- منتج 1 -->
+        <!-- 1. مسكنات -->
         <div class="product-card" data-category="general" data-search="بنادول panadol">
           <span class="product-badge bestseller">الأكثر مبيعًا</span>
           <img src="images/products/panadol.jpg" alt="بنادول" />
@@ -96,11 +103,10 @@
           <p class="price">1200 ر.ي</p>
           <div class="product-actions">
             <button class="btn btn-primary add-to-order" data-name="بنادول إكسترا 500mg" data-price="1200">أضف للطلب</button>
-            <a href="https://wa.me/967773704939?text=أريد طلب: بنادول" target="_blank" class="btn btn-whatsapp">💬</a>
+            <a href="https://wa.me/967773704939?text=أريد طلب: بنادول إكسترا" target="_blank" class="btn btn-whatsapp">💬</a>
           </div>
         </div>
 
-        <!-- منتج 2 -->
         <div class="product-card" data-category="general" data-search="باراسيتامول paracetamol">
           <img src="images/products/paracetamol.jpg" alt="باراسيتامول" />
           <h3>باراسيتامول 500mg</h3>
@@ -116,7 +122,6 @@
           </div>
         </div>
 
-        <!-- منتج 3 -->
         <div class="product-card" data-category="general" data-search="بروفين brufen">
           <img src="images/products/brufen.jpg" alt="بروفين" />
           <h3>بروفين 400mg</h3>
@@ -132,7 +137,178 @@
           </div>
         </div>
 
-        <!-- منتج 4 -->
+        <!-- 2. مضادات حيوية -->
+        <div class="product-card" data-category="antibiotics" data-search="أموكسيسيلين amoxicillin">
+          <img src="images/products/amoxicillin.jpg" alt="أموكسيسيلين" />
+          <h3>أموكسيسيلين 500mg</h3>
+          <div class="stock-info">
+            <span class="stock-badge total" data-name="أموكسيسيلين 500mg">الكلية: 0</span>
+            <span class="stock-badge sold" data-name="أموكسيسيلين 500mg">المباع: 0</span>
+            <span class="stock-badge remain" data-name="أموكسيسيلين 500mg">المتبقي: 0</span>
+          </div>
+          <p class="price">1500 ر.ي</p>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order" data-name="أموكسيسيلين 500mg" data-price="1500">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: أموكسيسيلين" target="_blank" class="btn btn-whatsapp">💬</a>
+          </div>
+        </div>
+
+        <div class="product-card" data-category="antibiotics" data-search="أزيثرومايسين azithromycin">
+          <img src="images/products/azithromycin.jpg" alt="أزيثرومايسين" />
+          <h3>أزيثرومايسين 500mg</h3>
+          <div class="stock-info">
+            <span class="stock-badge total" data-name="أزيثرومايسين 500mg">الكلية: 0</span>
+            <span class="stock-badge sold" data-name="أزيثرومايسين 500mg">المباع: 0</span>
+            <span class="stock-badge remain" data-name="أزيثرومايسين 500mg">المتبقي: 0</span>
+          </div>
+          <p class="price">2500 ر.ي</p>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order" data-name="أزيثرومايسين 500mg" data-price="2500">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: أزيثرومايسين" target="_blank" class="btn btn-whatsapp">💬</a>
+          </div>
+        </div>
+
+        <!-- 3. فيتامينات -->
+        <div class="product-card" data-category="vitamins" data-search="فيتامين سي vitamin c">
+          <span class="product-badge sale">خصم 20%</span>
+          <img src="images/products/vitamin-c.jpg" alt="فيتامين سي" />
+          <h3>فيتامين سي 1000mg</h3>
+          <div class="stock-info">
+            <span class="stock-badge total" data-name="فيتامين سي 1000mg">الكلية: 0</span>
+            <span class="stock-badge sold" data-name="فيتامين سي 1000mg">المباع: 0</span>
+            <span class="stock-badge remain" data-name="فيتامين سي 1000mg">المتبقي: 0</span>
+          </div>
+          <p class="price">1800 ر.ي</p>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order" data-name="فيتامين سي 1000mg" data-price="1800">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: فيتامين سي" target="_blank" class="btn btn-whatsapp">💬</a>
+          </div>
+        </div>
+
+        <div class="product-card" data-category="vitamins" data-search="فيتامين د vitamin d">
+          <img src="images/products/vitamin-d.jpg" alt="فيتامين د" />
+          <h3>فيتامين د 50000 وحدة</h3>
+          <div class="stock-info">
+            <span class="stock-badge total" data-name="فيتامين د 50000 وحدة">الكلية: 0</span>
+            <span class="stock-badge sold" data-name="فيتامين د 50000 وحدة">المباع: 0</span>
+            <span class="stock-badge remain" data-name="فيتامين د 50000 وحدة">المتبقي: 0</span>
+          </div>
+          <p class="price">2200 ر.ي</p>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order" data-name="فيتامين د 50000 وحدة" data-price="2200">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: فيتامين د" target="_blank" class="btn btn-whatsapp">💬</a>
+          </div>
+        </div>
+
+        <div class="product-card" data-category="vitamins" data-search="حديد فوليك iron folic">
+          <img src="images/products/iron.jpg" alt="حديد" />
+          <h3>أقراص الحديد + فوليك</h3>
+          <div class="stock-info">
+            <span class="stock-badge total" data-name="أقراص الحديد + فوليك">الكلية: 0</span>
+            <span class="stock-badge sold" data-name="أقراص الحديد + فوليك">المباع: 0</span>
+            <span class="stock-badge remain" data-name="أقراص الحديد + فوليك">المتبقي: 0</span>
+          </div>
+          <p class="price">1600 ر.ي</p>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order" data-name="أقراص الحديد + فوليك" data-price="1600">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: أقراص الحديد" target="_blank" class="btn btn-whatsapp">💬</a>
+          </div>
+        </div>
+
+        <!-- 4. الجهاز الهضمي -->
+        <div class="product-card" data-category="digestive" data-search="أوميبرازول omeprazole">
+          <img src="images/products/omeprazole.jpg" alt="أوميبرازول" />
+          <h3>أوميبرازول 20mg</h3>
+          <div class="stock-info">
+            <span class="stock-badge total" data-name="أوميبرازول 20mg">الكلية: 0</span>
+            <span class="stock-badge sold" data-name="أوميبرازول 20mg">المباع: 0</span>
+            <span class="stock-badge remain" data-name="أوميبرازول 20mg">المتبقي: 0</span>
+          </div>
+          <p class="price">1400 ر.ي</p>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order" data-name="أوميبرازول 20mg" data-price="1400">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: أوميبرازول" target="_blank" class="btn btn-whatsapp">💬</a>
+          </div>
+        </div>
+
+        <div class="product-card" data-category="digestive" data-search="مضاد حموضة antacid">
+          <img src="images/products/antacid.jpg" alt="مضاد حموضة" />
+          <h3>شراب مضاد حموضة</h3>
+          <div class="stock-info">
+            <span class="stock-badge total" data-name="شراب مضاد حموضة">الكلية: 0</span>
+            <span class="stock-badge sold" data-name="شراب مضاد حموضة">المباع: 0</span>
+            <span class="stock-badge remain" data-name="شراب مضاد حموضة">المتبقي: 0</span>
+          </div>
+          <p class="price">800 ر.ي</p>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order" data-name="شراب مضاد حموضة" data-price="800">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: مضاد حموضة" target="_blank" class="btn btn-whatsapp">💬</a>
+          </div>
+        </div>
+
+        <!-- 5. العناية بالبشرة -->
+        <div class="product-card" data-category="skincare" data-search="واقي شمس sunscreen">
+          <img src="images/products/sunscreen.jpg" alt="واقي شمس" />
+          <h3>واقي شمس SPF 50</h3>
+          <div class="stock-info">
+            <span class="stock-badge total" data-name="واقي شمس SPF 50">الكلية: 0</span>
+            <span class="stock-badge sold" data-name="واقي شمس SPF 50">المباع: 0</span>
+            <span class="stock-badge remain" data-name="واقي شمس SPF 50">المتبقي: 0</span>
+          </div>
+          <p class="price">3500 ر.ي</p>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order" data-name="واقي شمس SPF 50" data-price="3500">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: واقي شمس" target="_blank" class="btn btn-whatsapp">💬</a>
+          </div>
+        </div>
+
+        <div class="product-card" data-category="skincare" data-search="مرطب moisturizer">
+          <img src="images/products/moisturizer.jpg" alt="مرطب" />
+          <h3>كريم مرطب للبشرة</h3>
+          <div class="stock-info">
+            <span class="stock-badge total" data-name="كريم مرطب للبشرة">الكلية: 0</span>
+            <span class="stock-badge sold" data-name="كريم مرطب للبشرة">المباع: 0</span>
+            <span class="stock-badge remain" data-name="كريم مرطب للبشرة">المتبقي: 0</span>
+          </div>
+          <p class="price">2500 ر.ي</p>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order" data-name="كريم مرطب للبشرة" data-price="2500">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: كريم مرطب" target="_blank" class="btn btn-whatsapp">💬</a>
+          </div>
+        </div>
+
+        <!-- 6. الأم والطفل -->
+        <div class="product-card" data-category="mom-baby" data-search="حليب أطفال baby milk">
+          <img src="images/products/baby-milk.jpg" alt="حليب أطفال" />
+          <h3>حليب أطفال 400g</h3>
+          <div class="stock-info">
+            <span class="stock-badge total" data-name="حليب أطفال 400g">الكلية: 0</span>
+            <span class="stock-badge sold" data-name="حليب أطفال 400g">المباع: 0</span>
+            <span class="stock-badge remain" data-name="حليب أطفال 400g">المتبقي: 0</span>
+          </div>
+          <p class="price">4500 ر.ي</p>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order" data-name="حليب أطفال 400g" data-price="4500">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: حليب أطفال" target="_blank" class="btn btn-whatsapp">💬</a>
+          </div>
+        </div>
+
+        <div class="product-card" data-category="mom-baby" data-search="حفاضات diapers">
+          <img src="images/products/diapers.jpg" alt="حفاضات" />
+          <h3>حفاضات أطفال (32 حبة)</h3>
+          <div class="stock-info">
+            <span class="stock-badge total" data-name="حفاضات أطفال (32 حبة)">الكلية: 0</span>
+            <span class="stock-badge sold" data-name="حفاضات أطفال (32 حبة)">المباع: 0</span>
+            <span class="stock-badge remain" data-name="حفاضات أطفال (32 حبة)">المتبقي: 0</span>
+          </div>
+          <p class="price">3200 ر.ي</p>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order" data-name="حفاضات أطفال (32 حبة)" data-price="3200">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: حفاضات أطفال" target="_blank" class="btn btn-whatsapp">💬</a>
+          </div>
+        </div>
+
+        <!-- 7. أجهزة القياس -->
         <div class="product-card" data-category="devices" data-search="جهاز ضغط bp monitor">
           <img src="images/products/bp-monitor.jpg" alt="جهاز ضغط" />
           <h3>جهاز قياس الضغط الرقمي</h3>
@@ -144,11 +320,10 @@
           <p class="price">15000 ر.ي</p>
           <div class="product-actions">
             <button class="btn btn-primary add-to-order" data-name="جهاز قياس الضغط الرقمي" data-price="15000">أضف للطلب</button>
-            <a href="https://wa.me/967773704939?text=أريد طلب: جهاز ضغط" target="_blank" class="btn btn-whatsapp">💬</a>
+            <a href="https://wa.me/967773704939?text=أريد طلب: جهاز قياس الضغط" target="_blank" class="btn btn-whatsapp">💬</a>
           </div>
         </div>
 
-        <!-- منتج 5 -->
         <div class="product-card" data-category="devices" data-search="جهاز سكر glucometer">
           <img src="images/products/glucometer.jpg" alt="جهاز سكر" />
           <h3>جهاز قياس السكر</h3>
@@ -160,7 +335,53 @@
           <p class="price">12000 ر.ي</p>
           <div class="product-actions">
             <button class="btn btn-primary add-to-order" data-name="جهاز قياس السكر" data-price="12000">أضف للطلب</button>
-            <a href="https://wa.me/967773704939?text=أريد طلب: جهاز سكر" target="_blank" class="btn btn-whatsapp">💬</a>
+            <a href="https://wa.me/967773704939?text=أريد طلب: جهاز قياس السكر" target="_blank" class="btn btn-whatsapp">💬</a>
+          </div>
+        </div>
+
+        <!-- 8. مستلزمات طبية -->
+        <div class="product-card" data-category="supplies" data-search="كمامات masks">
+          <img src="images/products/masks.jpg" alt="كمامات" />
+          <h3>كمامات طبية (50 حبة)</h3>
+          <div class="stock-info">
+            <span class="stock-badge total" data-name="كمامات طبية (50 حبة)">الكلية: 0</span>
+            <span class="stock-badge sold" data-name="كمامات طبية (50 حبة)">المباع: 0</span>
+            <span class="stock-badge remain" data-name="كمامات طبية (50 حبة)">المتبقي: 0</span>
+          </div>
+          <p class="price">1000 ر.ي</p>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order" data-name="كمامات طبية (50 حبة)" data-price="1000">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: كمامات طبية" target="_blank" class="btn btn-whatsapp">💬</a>
+          </div>
+        </div>
+
+        <div class="product-card" data-category="supplies" data-search="ضمادات bandage">
+          <img src="images/products/bandage.jpg" alt="ضمادات" />
+          <h3>ضمادات لاصقة (20 حبة)</h3>
+          <div class="stock-info">
+            <span class="stock-badge total" data-name="ضمادات لاصقة (20 حبة)">الكلية: 0</span>
+            <span class="stock-badge sold" data-name="ضمادات لاصقة (20 حبة)">المباع: 0</span>
+            <span class="stock-badge remain" data-name="ضمادات لاصقة (20 حبة)">المتبقي: 0</span>
+          </div>
+          <p class="price">600 ر.ي</p>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order" data-name="ضمادات لاصقة (20 حبة)" data-price="600">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: ضمادات لاصقة" target="_blank" class="btn btn-whatsapp">💬</a>
+          </div>
+        </div>
+
+        <div class="product-card" data-category="supplies" data-search="مطهر بيتادين antiseptic">
+          <img src="images/products/antiseptic.jpg" alt="مطهر" />
+          <h3>مطهر جروح (بيتادين)</h3>
+          <div class="stock-info">
+            <span class="stock-badge total" data-name="مطهر جروح (بيتادين)">الكلية: 0</span>
+            <span class="stock-badge sold" data-name="مطهر جروح (بيتادين)">المباع: 0</span>
+            <span class="stock-badge remain" data-name="مطهر جروح (بيتادين)">المتبقي: 0</span>
+          </div>
+          <p class="price">900 ر.ي</p>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-order" data-name="مطهر جروح (بيتادين)" data-price="900">أضف للطلب</button>
+            <a href="https://wa.me/967773704939?text=أريد طلب: مطهر جروح" target="_blank" class="btn btn-whatsapp">💬</a>
           </div>
         </div>
 
@@ -235,7 +456,7 @@
     </div>
   </section>
 
-  <!-- الفوتر والتحذيرات -->
+  <!-- الفوتر -->
   <footer class="footer">
     <div class="container footer-grid">
       <div>
