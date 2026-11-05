@@ -115,3 +115,19 @@ window.addEventListener("scroll", () => {
   if (!header) return;
   header.style.boxShadow = window.scrollY > 20 ? "0 2px 12px rgba(0,0,0,0.12)" : "";
 });
+/* مزامنة عدادات المخزون في الموقع الرئيسي */
+document.addEventListener("DOMContentLoaded", () => {
+  const inv = JSON.parse(localStorage.getItem("pharmacy_inventory") || "[]");
+  document.querySelectorAll(".stock-badge").forEach(badge => {
+    const item = inv.find(i => i.name === badge.dataset.name);
+    if (item) {
+      const rem = item.qty - item.sold;
+      if (badge.classList.contains("total")) badge.textContent = `الكلية: ${item.qty}`;
+      if (badge.classList.contains("sold")) badge.textContent = `المباع: ${item.sold}`;
+      if (badge.classList.contains("remain")) {
+        badge.textContent = `المتبقي: ${rem}`;
+        if (rem <= 1) badge.classList.add("low");
+      }
+    }
+  });
+});
