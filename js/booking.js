@@ -11,6 +11,21 @@ const deliverySel = document.getElementById("deliveryMethod");
 const addressLabel = document.getElementById("addressLabel");
 const addressInput = document.getElementById("customerAddress");
 
+/* ---------------- الإشعارات ---------------- */
+window.showToast = function(text, isError = false) {
+  let toast = document.getElementById("toast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "toast";
+    document.body.appendChild(toast);
+  }
+  toast.textContent = text;
+  toast.className = "toast show" + (isError ? " error" : "");
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => (toast.className = "toast"), 3000);
+};
+
+/* ---------------- السلة ---------------- */
 function getCart() {
   return JSON.parse(localStorage.getItem("pharmacy_cart") || "[]");
 }
@@ -20,7 +35,6 @@ function saveCart(cart) {
   renderCart();
 }
 
-/* ---------------- عرض السلة ---------------- */
 function renderCart() {
   if (!orderListEl) return;
   const cart = getCart();
@@ -40,12 +54,12 @@ function renderCart() {
     li.innerHTML = `
       <span class="item-name">${item.name}</span>
       <span class="item-qty">
-        <button type="button" class="qty-btn" onclick="changeQty(${index}, -1)">−</button>
+        <button type="button" class="qty-btn" onclick="window.changeQty(${index}, -1)">−</button>
         <span>${item.qty}</span>
-        <button type="button" class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
+        <button type="button" class="qty-btn" onclick="window.changeQty(${index}, 1)">+</button>
       </span>
       <span class="item-price">${item.price * item.qty} ر.ي</span>
-      <button type="button" class="remove-btn" onclick="removeFromCart(${index})">✕</button>
+      <button type="button" class="remove-btn" onclick="window.removeFromCart(${index})">✕</button>
     `;
     orderListEl.appendChild(li);
   });
@@ -53,7 +67,6 @@ function renderCart() {
   if (orderTotalEl) orderTotalEl.textContent = total;
 }
 
-/* ---------------- تعديل السلة ---------------- */
 window.changeQty = function(index, change) {
   let cart = getCart();
   cart[index].qty += change;
@@ -86,8 +99,7 @@ if (orderForm) {
     const cart = getCart();
 
     if (cart.length === 0) {
-      if (typeof showToast === "function") showToast("⚠️ أضف منتجًا واحدًا على الأقل", true);
-      else alert("⚠️ أضف منتجًا واحدًا على الأقل");
+      window.showToast("⚠️ أضف منتجًا واحدًا على الأقل", true);
       return;
     }
 
@@ -99,7 +111,7 @@ if (orderForm) {
     const notes = document.getElementById("orderNotes").value.trim();
     const file = document.getElementById("prescriptionFile").files[0];
 
-    if (!name || !phone) return alert("⚠️ يرجى إدخال الاسم ورقم الجوال");
+    if (!name || !phone) return window.showToast("⚠️ يرجى إدخال الاسم ورقم الجوال", true);
     
     const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
     const submitBtn = orderForm.querySelector("button[type='submit']");
@@ -142,11 +154,11 @@ if (orderForm) {
       orderForm.reset();
       if (addressLabel) addressLabel.style.display = "none";
       
-      if (typeof showToast === "function") showToast("✅ تم إرسال الطلب وفتح واتساب");
+      window.showToast("✅ تم إرسال الطلب وفتح واتساب");
 
     } catch (error) {
       console.error(error);
-      alert("❌ حدث خطأ، حاول مرة أخرى.");
+      window.showToast("❌ حدث خطأ، حاول مرة أخرى.", true);
     } finally {
       submitBtn.textContent = "تأكيد الطلب عبر واتساب";
       submitBtn.disabled = false;
