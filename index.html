@@ -440,18 +440,22 @@
           <p class="order-total">الإجمالي: <span id="orderTotal">0</span> ر.ي</p>
         </div>
         <form class="order-form" id="orderForm">
-          <label>الاسم الكامل *<input type="text" id="customerName" required /></label>
-          <label>رقم الجوال *<input type="tel" id="customerPhone" required /></label>
-          <label>طريقة الاستلام *
-            <select id="deliveryMethod" required>
-              <option value="استلام من الصيدلية">استلام من الصيدلية</option>
-              <option value="توصيل للمنزل">توصيل للمنزل</option>
-            </select>
-          </label>
-          <label id="addressLabel" style="display:none;">العنوان<input type="text" id="customerAddress" /></label>
-          <label>ملاحظات<textarea id="orderNotes" rows="2"></textarea></label>
-          <button type="submit" class="btn btn-primary btn-block">تأكيد الطلب عبر واتساب</button>
-        </form>
+  <label>الاسم الكامل *<input type="text" id="customerName" required placeholder="اسمك الكامل" /></label>
+  <label>رقم الجوال *<input type="tel" id="customerPhone" required placeholder="7xxxxxxxx" /></label>
+  <label>طريقة الاستلام *
+    <select id="deliveryMethod" required>
+      <option value="استلام من الصيدلية">استلام من الصيدلية</option>
+      <option value="توصيل للمنزل">توصيل للمنزل</option>
+    </select>
+  </label>
+  <label id="addressLabel" style="display:none;">العنوان (للتوصيل)<input type="text" id="customerAddress" placeholder="المدينة - الحي" /></label>
+  <label>كود الخصم (اختياري)<input type="text" id="couponCode" placeholder="مثال: VIT20" /></label>
+  <label>رفع الوصفة الطبية (اختياري)
+    <input type="file" id="prescriptionFile" accept="image/*" />
+  </label>
+  <label>ملاحظات إضافية<textarea id="orderNotes" rows="2" placeholder="أي تفاصيل تريد إضافتها..."></textarea></label>
+  <button type="submit" class="btn btn-primary btn-block">تأكيد الطلب عبر واتساب</button>
+</form>
       </div>
     </div>
   </section>
