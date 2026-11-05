@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="noindex, nofollow" />
   <title>لوحة التحكم | صيدلية المجيدي</title>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/dark-mode.css" />
@@ -12,36 +11,29 @@
 </head>
 <body class="admin-body">
 
-  <!-- شاشة الدخول -->
   <div class="login-screen" id="loginScreen">
     <div class="login-box">
       <div class="login-logo">🔐</div>
       <h1>لوحة التحكم</h1>
-      <p>صيدلية المجيدي</p>
       <form id="loginForm">
-        <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور" required autocomplete="off" />
+        <input type="password" id="passwordInput" placeholder="كلمة المرور" required />
         <button type="submit" class="btn btn-primary btn-block">دخول</button>
         <p class="login-error" id="loginError"></p>
       </form>
-      <a href="index.html" class="back-link">← العودة للموقع</a>
     </div>
   </div>
 
-  <!-- لوحة التحكم -->
   <div class="admin-panel" id="adminPanel" style="display:none;">
-
     <header class="admin-header">
       <div class="admin-header-inner">
         <h1>📋 إدارة صيدلية المجيدي</h1>
         <div class="admin-actions">
-          <button id="soundToggleBtn" class="icon-btn" title="التنبيه الصوتي">🔔</button>
-          <button id="darkBtn" class="icon-btn" title="الوضع الليلي">🌙</button>
+          <button id="darkBtn" class="icon-btn">🌙</button>
           <button id="logoutBtn" class="btn btn-outline btn-sm">خروج</button>
         </div>
       </div>
     </header>
 
-    <!-- التبويبات (Tabs) -->
     <div class="admin-tabs">
       <button class="tab-btn active" data-tab="tab-orders">📦 الطلبات</button>
       <button class="tab-btn" data-tab="tab-inventory">📊 المخزون</button>
@@ -49,8 +41,7 @@
     </div>
 
     <div class="admin-container">
-      
-      <!-- ==================== تبويب الطلبات ==================== -->
+      <!-- الطلبات -->
       <div id="tab-orders" class="tab-content active">
         <div class="stats-grid">
           <div class="stat-card"><span class="stat-num" id="statTotal">0</span><span class="stat-label">إجمالي الطلبات</span></div>
@@ -58,68 +49,66 @@
           <div class="stat-card preparing"><span class="stat-num" id="statPreparing">0</span><span class="stat-label">قيد التجهيز</span></div>
           <div class="stat-card done"><span class="stat-num" id="statDone">0</span><span class="stat-label">تم التسليم</span></div>
         </div>
-
         <div class="admin-toolbar">
-          <input type="text" id="searchInput" placeholder="🔍 ابحث بالاسم أو الجوال..." />
+          <input type="text" id="searchInput" placeholder="🔍 ابحث..." />
           <select id="filterStatus">
             <option value="all">كل الحالات</option>
             <option value="قيد الانتظار">قيد الانتظار</option>
             <option value="قيد التجهيز">قيد التجهيز</option>
-            <option value="جاهز للاستلام">جاهز للاستلام</option>
             <option value="تم التسليم">تم التسليم</option>
-            <option value="ملغي">ملغي</option>
           </select>
         </div>
-
         <div id="ordersContainer"></div>
       </div>
 
-      <!-- ==================== تبويب المخزون ==================== -->
+      <!-- المخزون -->
       <div id="tab-inventory" class="tab-content">
         <div class="admin-toolbar">
-          <input type="text" id="searchInventory" placeholder="🔍 ابحث عن دواء..." />
-          <button id="addInventoryBtn" class="btn btn-primary btn-sm">➕ إضافة دواء للمخزون</button>
+          <button id="addInventoryBtn" class="btn btn-primary btn-sm">➕ إضافة دواء</button>
         </div>
         
-        <div id="inventoryForm" style="display:none; background:var(--bg); padding:15px; border-radius:8px; margin-bottom:15px; border:1px solid var(--border);">
-          <h3 style="margin-bottom:10px;">إضافة / تعديل دواء</h3>
+        <div id="inventoryForm" style="display:none; background:var(--bg); padding:15px; border-radius:8px; margin-bottom:15px;">
           <input type="hidden" id="editInvIndex" value="-1">
-          <input type="text" id="invName" placeholder="اسم الدواء (مثال: بنادول)" style="width:100%; padding:8px; margin-bottom:8px; border-radius:6px; border:1px solid var(--border);">
-          <div style="display:flex; gap:10px;">
-            <input type="number" id="invQty" placeholder="الكمية الكلية" style="flex:1; padding:8px; border-radius:6px; border:1px solid var(--border);">
-            <input type="number" id="invSold" placeholder="المباع" style="flex:1; padding:8px; border-radius:6px; border:1px solid var(--border);">
-          </div>
-          <div style="margin-top:10px; display:flex; gap:10px;">
-            <button id="saveInvBtn" class="btn btn-primary btn-sm">حفظ</button>
-            <button id="cancelInvBtn" class="btn btn-outline btn-sm">إلغاء</button>
-          </div>
+          <label>اسم الدواء (من القائمة):</label>
+          <select id="invName" style="width:100%; padding:8px; margin-bottom:8px;">
+            <option value="بنادول إكسترا 500mg">بنادول إكسترا 500mg</option>
+            <option value="باراسيتامول 500mg">باراسيتامول 500mg</option>
+            <option value="بروفين 400mg">بروفين 400mg</option>
+            <option value="جهاز قياس الضغط الرقمي">جهاز قياس الضغط الرقمي</option>
+            <option value="جهاز قياس السكر">جهاز قياس السكر</option>
+          </select>
+          <label>الكمية الكلية:</label>
+          <input type="number" id="invQty" placeholder="الكلية" style="width:100%; padding:8px; margin-bottom:8px;">
+          <label>المباع:</label>
+          <input type="number" id="invSold" placeholder="المباع" style="width:100%; padding:8px; margin-bottom:8px;">
+          <label>سعر الوحدة (لحساب التراكمي):</label>
+          <input type="number" id="invPrice" placeholder="السعر" style="width:100%; padding:8px; margin-bottom:8px;">
+          <button id="saveInvBtn" class="btn btn-primary btn-sm">حفظ</button>
+          <button id="cancelInvBtn" class="btn btn-outline btn-sm">إلغاء</button>
         </div>
 
         <div id="inventoryContainer" style="overflow-x:auto;"></div>
       </div>
 
-      <!-- ==================== تبويب طلبات الشركات ==================== -->
+      <!-- الشركات -->
       <div id="tab-suppliers" class="tab-content">
         <div class="admin-toolbar">
           <button id="addSupplierBtn" class="btn btn-primary btn-sm">➕ إضافة طلب شراء</button>
         </div>
-
-        <div id="supplierForm" style="display:none; background:var(--bg); padding:15px; border-radius:8px; margin-bottom:15px; border:1px solid var(--border);">
-          <h3 style="margin-bottom:10px;">طلب من شركة</h3>
-          <input type="text" id="supName" placeholder="اسم الدواء والنوع" style="width:100%; padding:8px; margin-bottom:8px; border-radius:6px; border:1px solid var(--border);">
-          <div style="display:flex; gap:10px;">
-            <input type="number" id="supQty" placeholder="العدد المطلوب" style="flex:1; padding:8px; border-radius:6px; border:1px solid var(--border);">
-            <input type="date" id="supDate" style="flex:1; padding:8px; border-radius:6px; border:1px solid var(--border);">
-          </div>
-          <div style="margin-top:10px; display:flex; gap:10px;">
-            <button id="saveSupBtn" class="btn btn-primary btn-sm">حفظ الطلب</button>
-            <button id="cancelSupBtn" class="btn btn-outline btn-sm">إلغاء</button>
-          </div>
+        <div id="supplierForm" style="display:none; background:var(--bg); padding:15px; border-radius:8px; margin-bottom:15px;">
+          <label>اسم الشركة:</label>
+          <input type="text" id="supCompany" placeholder="الشركة" style="width:100%; padding:8px; margin-bottom:8px;">
+          <label>الدواء / النوع:</label>
+          <input type="text" id="supName" placeholder="الدواء" style="width:100%; padding:8px; margin-bottom:8px;">
+          <label>العدد المطلوب:</label>
+          <input type="number" id="supQty" placeholder="العدد" style="width:100%; padding:8px; margin-bottom:8px;">
+          <label>موعد الاستلام:</label>
+          <input type="date" id="supDate" style="width:100%; padding:8px; margin-bottom:8px;">
+          <button id="saveSupBtn" class="btn btn-primary btn-sm">حفظ</button>
+          <button id="cancelSupBtn" class="btn btn-outline btn-sm">إلغاء</button>
         </div>
-
         <div id="suppliersContainer" style="overflow-x:auto;"></div>
       </div>
-
     </div>
   </div>
 
