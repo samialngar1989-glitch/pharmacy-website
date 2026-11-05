@@ -5,37 +5,45 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxtyvD8zQv2IsnaX0tYL8f0
 
 /* ---------------- الوضع الليلي ---------------- */
 const darkBtn = document.getElementById("darkBtn");
-function applyDarkMode(isDark) {
-  document.body.classList.toggle("dark", isDark);
-  localStorage.setItem("pharmacy_dark", isDark ? "1" : "0");
-  if (darkBtn) darkBtn.textContent = isDark ? "☀️" : "🌙";
-}
-applyDarkMode(localStorage.getItem("pharmacy_dark") === "1");
 if (darkBtn) {
+  if (localStorage.getItem("pharmacy_dark") === "1") document.body.classList.add("dark");
   darkBtn.addEventListener("click", () => {
-    applyDarkMode(!document.body.classList.contains("dark"));
+    document.body.classList.toggle("dark");
+    localStorage.setItem("pharmacy_dark", document.body.classList.contains("dark") ? "1" : "0");
   });
 }
 
-/* ---------------- القائمة والتمرير ---------------- */
+/* ---------------- القائمة ---------------- */
 const menuBtn = document.getElementById("menuBtn");
 const nav = document.getElementById("nav");
 if (menuBtn && nav) {
   menuBtn.addEventListener("click", () => nav.classList.toggle("open"));
 }
-const toTopBtn = document.getElementById("toTop");
-window.addEventListener("scroll", () => {
-  if (toTopBtn) toTopBtn.classList.toggle("show", window.scrollY > 400);
-});
-if (toTopBtn) {
-  toTopBtn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
-}
-const yearEl = document.getElementById("year");
-if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-/* ============================================================
-   جلب المنتجات من Google Sheets
-   ============================================================ */
+/* ---------------- دالة إضافة السلة (عامة) ---------------- */
+window.addToCart = function(name, price) {
+  let cart = JSON.parse(localStorage.getItem("pharmacy_cart") || "[]");
+  const existing = cart.find(item => item.name === name);
+  const numericPrice = parseFloat(price) || 0;
+  
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({ name: name, price: numericPrice, qty: 1 });
+  }
+  
+  localStorage.setItem("pharmacy_cart", JSON.stringify(cart));
+  
+  // إبلاغ ملف booking.js بتحديث الواجهة
+  window.dispatchEvent(new Event("cartUpdated"));
+  
+  // إشعار
+  if (typeof window.showToast === "function") {
+    window.showToast(`تمت إضافة: ${name}`);
+  }
+};
+
+/* ---------------- جلب المنتجات ---------------- */
 async function loadProducts() {
   const grid = document.getElementById("productsGrid");
   if (!grid) return;
@@ -54,9 +62,10 @@ async function loadProducts() {
 
     data.products.forEach(product => {
       if (!product.Name) return;
-
-      const remaining = product.TotalQty - product.SoldQty;
+      
+      const remaining = (product.TotalQty || 0) - (product.SoldQty || 0);
       const isLow = remaining <= 1;
+      const price = parseFloat(product.Price) || 0;
 
       const card = document.createElement("div");
       card.className = "product-card";
@@ -67,52 +76,35 @@ async function loadProducts() {
         <img src="${product.ImageUrl}" alt="${product.Name}" style="background:#eee;" />
         <h3>${product.Name}</h3>
         <div class="stock-info">
-          <span class="stock-badge total">الكلية: ${product.TotalQty}</span>
-          <span class="stock-badge sold">المباع: ${product.SoldQty}</span>
+          <span class="stock-badge total">الكلية: ${product.TotalQty || 0}</span>
+          <span class="stock-badge sold">المباع: ${product.SoldQty || 0}</span>
           <span class="stock-badge remain ${isLow ? 'low' : ''}">المتبقي: ${remaining} ${isLow ? '⚠️' : ''}</span>
         </div>
-        <p class="price">${product.Price} ر.ي</p>
+        <p class="price">${price} ر.ي</p>
         <div class="product-actions">
-          <!-- ربط مباشر لدالة الإضافة العامة -->
-          <button class="btn btn-primary" onclick="addToCart('${product.Name}', ${product.Price})">أضف للطلب</button>
+          <button class="btn btn-primary add-btn" data-name="${product.Name}" data-price="${price}">أضف للطلب</button>
           <a href="https://wa.me/967773704939?text=أريد طلب: ${product.Name}" target="_blank" class="btn btn-whatsapp">💬</a>
         </div>
       `;
       grid.appendChild(card);
     });
 
+    // ربط الأزرار بالسلة بعد إنشائها
+    document.querySelectorAll(".add-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        window.addToCart(btn.dataset.name, btn.dataset.price);
+      });
+    });
+
     filterProducts();
 
   } catch (error) {
     console.error("Error loading products:", error);
-    grid.innerHTML = `<p style="text-align:center; width:100%; color:red;">حدث خطأ. تأكد من اتصالك بالإنترنت.</p>`;
+    grid.innerHTML = `<p style="text-align:center; width:100%; color:red;">حدث خطأ في تحميل البيانات.</p>`;
   }
 }
 
-/* ============================================================
-   دالة الإضافة للسلة (عامة لكي تراها الأزرار الديناميكية)
-   ============================================================ */
-window.addToCart = function(name, price) {
-  let cart = JSON.parse(localStorage.getItem("pharmacy_cart") || "[]");
-  const existing = cart.find(item => item.name === name);
-  
-  if (existing) {
-    existing.qty += 1;
-  } else {
-    cart.push({ name, price: parseFloat(price), qty: 1 });
-  }
-  
-  localStorage.setItem("pharmacy_cart", JSON.stringify(cart));
-  
-  // إبلاغ ملف booking.js بتحديث الواجهة
-  window.dispatchEvent(new Event("cartUpdated"));
-  
-  // إشعار
-  if (typeof showToast === "function") showToast(`تمت إضافة: ${name}`);
-};
-
 /* ---------------- الفلترة والبحث ---------------- */
-const categoryButtons = document.querySelectorAll(".category-card");
 const searchBar = document.getElementById("searchBar");
 const noResults = document.getElementById("noResults");
 
@@ -139,9 +131,9 @@ function filterProducts() {
   if (noResults) noResults.style.display = visibleCount === 0 ? "block" : "none";
 }
 
-categoryButtons.forEach(btn => {
+document.querySelectorAll(".category-card").forEach(btn => {
   btn.addEventListener("click", () => {
-    categoryButtons.forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".category-card").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
     filterProducts();
   });
