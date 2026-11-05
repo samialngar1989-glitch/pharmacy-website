@@ -312,7 +312,11 @@ function printInvoice(index) {
       th { background: #f0f0f0; } .total { text-align: left; font-weight: bold; font-size: 18px; margin-top: 15px; }
     </style></head><body>
       <div class="header">
-        <div><h1 style="color:#0e9f6e;margin:0;">صيدلية المجيدي</h1><p>د. سامي محمد احمد | ترخيص: 80808080<br>هاتف: 773704939</p></div>
+        <div>
+          <h1 style="color:#0e9f6e;margin:0;">صيدلية المجيدي</h1>
+          <p>د. سامي محمد احمد | ترخيص: 80808080<br>هاتف: 773704939</p>
+        </div>
+        <!-- هنا تم إضافة مسار الشعار -->
         <img src="https://samialngar1989-glitch.github.io/pharmacy-website/images/logo.png" width="80">
       </div>
       <p><strong>فاتورة رقم:</strong> ${order.invoiceNumber} | <strong>التاريخ:</strong> ${new Date(order.date).toLocaleString("ar-SA")}</p>
@@ -320,7 +324,8 @@ function printInvoice(index) {
       <table><tr><th>المنتج</th><th>الكمية</th><th>السعر</th><th>المجموع</th></tr>${itemsHtml}</table>
       <div class="total">الإجمالي: ${order.total} ر.ي</div>
       <div style="text-align:left; margin-top:40px;">
-        <img src="https://samialngar1989-glitch.github.io/pharmacy-website/images/logo.png" width="80" style="border-radius:50%; border:2px dashed #0e9f6e; padding:5px;">
+        <!-- هنا تم تعديل مسار الختم ليقرأ stamp.png -->
+        <img src="https://samialngar1989-glitch.github.io/pharmacy-website/images/stamp.png" width="90" style="border-radius:50%; padding:5px;">
         <p>ختم الصيدلية</p>
       </div>
       <script>window.onload=function(){window.print();setTimeout(function(){window.close();},1000);}<\/script>
