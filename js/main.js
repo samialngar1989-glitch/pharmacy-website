@@ -1,5 +1,5 @@
 /* ============================================================
-   main.js — جلب البيانات من Google Sheets
+   main.js — جلب البيانات من Google Sheets + إدارة السلة
    ============================================================ */
 const API_URL = "https://script.google.com/macros/s/AKfycbxtyvD8zQv2IsnaX0tYL8f0npfUJv8A7SVBTHeklRoE9yeq-M9r3DSvVnO5XDDXheVw-g/exec";
 
@@ -17,17 +17,12 @@ if (darkBtn) {
   });
 }
 
-/* ---------------- القائمة على الجوال ---------------- */
+/* ---------------- القائمة والتمرير ---------------- */
 const menuBtn = document.getElementById("menuBtn");
 const nav = document.getElementById("nav");
 if (menuBtn && nav) {
   menuBtn.addEventListener("click", () => nav.classList.toggle("open"));
-  nav.querySelectorAll("a").forEach(link => {
-    link.addEventListener("click", () => nav.classList.remove("open"));
-  });
 }
-
-/* ---------------- زر العودة لأعلى ---------------- */
 const toTopBtn = document.getElementById("toTop");
 window.addEventListener("scroll", () => {
   if (toTopBtn) toTopBtn.classList.toggle("show", window.scrollY > 400);
@@ -35,20 +30,18 @@ window.addEventListener("scroll", () => {
 if (toTopBtn) {
   toTopBtn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
 }
-
-/* ---------------- سنة الفوتر ---------------- */
 const yearEl = document.getElementById("year");
 if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-/* ---------------- جلب المنتجات وعرضها ---------------- */
+/* ============================================================
+   جلب المنتجات من Google Sheets
+   ============================================================ */
 async function loadProducts() {
   const grid = document.getElementById("productsGrid");
   if (!grid) return;
 
   try {
-    grid.innerHTML = `<p style="text-align:center; width:100%;">⏳ جاري تحميل الأدوية...</p>`;
-    
-    // طلب البيانات من جوجل
+    grid.innerHTML = `<p style="text-align:center; width:100%; padding:20px;">⏳ جاري تحميل الأدوية...</p>`;
     const response = await fetch(`${API_URL}?action=getProducts`);
     const data = await response.json();
     
@@ -57,10 +50,9 @@ async function loadProducts() {
       return;
     }
 
-    grid.innerHTML = ""; // تفريغ الشبكة
+    grid.innerHTML = ""; 
 
     data.products.forEach(product => {
-      // تجاهل الأدوية التي ليس لها اسم
       if (!product.Name) return;
 
       const remaining = product.TotalQty - product.SoldQty;
@@ -81,26 +73,43 @@ async function loadProducts() {
         </div>
         <p class="price">${product.Price} ر.ي</p>
         <div class="product-actions">
-          <button class="btn btn-primary add-to-order" 
-                  data-name="${product.Name}" 
-                  data-price="${product.Price}">
-            أضف للطلب
-          </button>
+          <!-- ربط مباشر لدالة الإضافة العامة -->
+          <button class="btn btn-primary" onclick="addToCart('${product.Name}', ${product.Price})">أضف للطلب</button>
           <a href="https://wa.me/967773704939?text=أريد طلب: ${product.Name}" target="_blank" class="btn btn-whatsapp">💬</a>
         </div>
       `;
       grid.appendChild(card);
     });
 
-    // إعادة ربط أزرار "أضف للطلب" بالسلة بعد التحميل
-    attachCartEvents();
-    filterProducts(); // إعادة تطبيق البحث
+    filterProducts();
 
   } catch (error) {
     console.error("Error loading products:", error);
-    grid.innerHTML = `<p style="text-align:center; width:100%; color:red;">حدث خطأ في جلب الأدوية. تأكد من اتصالك بالإنترنت.</p>`;
+    grid.innerHTML = `<p style="text-align:center; width:100%; color:red;">حدث خطأ. تأكد من اتصالك بالإنترنت.</p>`;
   }
 }
+
+/* ============================================================
+   دالة الإضافة للسلة (عامة لكي تراها الأزرار الديناميكية)
+   ============================================================ */
+window.addToCart = function(name, price) {
+  let cart = JSON.parse(localStorage.getItem("pharmacy_cart") || "[]");
+  const existing = cart.find(item => item.name === name);
+  
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({ name, price: parseFloat(price), qty: 1 });
+  }
+  
+  localStorage.setItem("pharmacy_cart", JSON.stringify(cart));
+  
+  // إبلاغ ملف booking.js بتحديث الواجهة
+  window.dispatchEvent(new Event("cartUpdated"));
+  
+  // إشعار
+  if (typeof showToast === "function") showToast(`تمت إضافة: ${name}`);
+};
 
 /* ---------------- الفلترة والبحث ---------------- */
 const categoryButtons = document.querySelectorAll(".category-card");
@@ -140,35 +149,5 @@ categoryButtons.forEach(btn => {
 
 if (searchBar) searchBar.addEventListener("input", filterProducts);
 
-/* ---------------- ربط أزرار السلة ---------------- */
-function attachCartEvents() {
-  document.querySelectorAll(".add-to-order").forEach(btn => {
-    btn.replaceWith(btn.cloneNode(true)); // إزالة الأحداث القديمة
-  });
-  
-  document.querySelectorAll(".add-to-order").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const name = btn.dataset.name;
-      const price = parseFloat(btn.dataset.price) || 0;
-
-      const existing = cart.find(item => item.name === name);
-      if (existing) {
-        existing.qty += 1;
-      } else {
-        cart.push({ name, price, qty: 1 });
-      }
-
-      renderCart();
-      showToast(`تمت إضافة: ${name}`);
-      
-      const original = btn.textContent;
-      btn.textContent = "✓ أُضيف";
-      setTimeout(() => (btn.textContent = original), 1200);
-    });
-  });
-}
-
-/* ---------------- بدء التشغيل ---------------- */
-document.addEventListener("DOMContentLoaded", () => {
-  loadProducts();
-});
+// بدء التشغيل
+document.addEventListener("DOMContentLoaded", loadProducts);
