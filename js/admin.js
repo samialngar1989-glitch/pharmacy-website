@@ -1,5 +1,5 @@
 /* ============================================================
-   admin.js — النسخة النهائية الشاملة
+   admin.js — النسخة النهائية الشاملة (مع كل الأدوية)
    صيدلية المجيدي
    ============================================================ */
 
@@ -63,6 +63,29 @@ function saveInventory(i) { localStorage.setItem("pharmacy_inventory", JSON.stri
 function getSuppliers() { return JSON.parse(localStorage.getItem("pharmacy_suppliers") || "[]"); }
 function saveSuppliers(s) { localStorage.setItem("pharmacy_suppliers", JSON.stringify(s)); }
 
+// قائمة الأدوية الموحدة (19 دواء)
+const ALL_MEDICINES = [
+  "بنادول إكسترا 500mg",
+  "باراسيتامول 500mg",
+  "بروفين 400mg",
+  "أموكسيسيلين 500mg",
+  "أزيثرومايسين 500mg",
+  "فيتامين سي 1000mg",
+  "فيتامين د 50000 وحدة",
+  "أقراص الحديد + فوليك",
+  "أوميبرازول 20mg",
+  "شراب مضاد حموضة",
+  "واقي شمس SPF 50",
+  "كريم مرطب للبشرة",
+  "حليب أطفال 400g",
+  "حفاضات أطفال (32 حبة)",
+  "جهاز قياس الضغط الرقمي",
+  "جهاز قياس السكر",
+  "كمامات طبية (50 حبة)",
+  "ضمادات لاصقة (20 حبة)",
+  "مطهر جروح (بيتادين)"
+];
+
 /* ============================================================
    الطلبات والمزامنة التلقائية للمخزون
    ============================================================ */
@@ -124,7 +147,6 @@ function changeOrderStatus(index, newStatus) {
   orders[index].status = newStatus;
   saveOrders(orders);
 
-  // المزامنة التلقائية: إذا تغيرت إلى "تم التسليم" نخصم من المخزون
   if (newStatus === "تم التسليم" && oldStatus !== "تم التسليم") {
     const inv = getInventory();
     orders[index].items.forEach(orderItem => {
@@ -134,7 +156,6 @@ function changeOrderStatus(index, newStatus) {
     saveInventory(inv);
   }
   
-  // إذا رجع من "تم التسليم" إلى حالة أخرى نرجع الكمية
   if (newStatus !== "تم التسليم" && oldStatus === "تم التسليم") {
     const inv = getInventory();
     orders[index].items.forEach(orderItem => {
@@ -188,6 +209,11 @@ document.getElementById("addInventoryBtn").addEventListener("click", () => {
   document.getElementById("invQty").value = "";
   document.getElementById("invSold").value = "0";
   document.getElementById("invPrice").value = "";
+  
+  // تعبئة قائمة الأدوية في المخزون
+  const select = document.getElementById("invName");
+  select.innerHTML = '<option value="">-- اختر الدواء --</option>' + 
+    ALL_MEDICINES.map(med => `<option value="${med}">${med}</option>`).join("");
 });
 
 document.getElementById("cancelInvBtn").addEventListener("click", () => {
@@ -201,9 +227,11 @@ document.getElementById("saveInvBtn").addEventListener("click", () => {
   const price = parseFloat(document.getElementById("invPrice").value) || 0;
   const index = parseInt(document.getElementById("editInvIndex").value);
 
+  if (!name) return alert("يرجى اختيار الدواء من القائمة");
+
   const inv = getInventory();
   if (index === -1) {
-    if (inv.find(i => i.name === name)) return alert("الدواء موجود بالفعل، قم بتعديله.");
+    if (inv.find(i => i.name === name)) return alert("هذا الدواء موجود بالفعل في المخزون، قم بتعديله بدلاً من إضافته.");
     inv.push({ name, qty, sold, price });
   } else {
     inv[index] = { name, qty, sold, price };
@@ -217,7 +245,11 @@ function editInventory(index) {
   const item = getInventory()[index];
   document.getElementById("inventoryForm").style.display = "block";
   document.getElementById("editInvIndex").value = index;
-  document.getElementById("invName").value = item.name;
+  
+  // تعبئة القائمة المنسدلة عند التعديل
+  const select = document.getElementById("invName");
+  select.innerHTML = ALL_MEDICINES.map(med => `<option value="${med}" ${med === item.name ? 'selected' : ''}>${med}</option>`).join("");
+  
   document.getElementById("invQty").value = item.qty;
   document.getElementById("invSold").value = item.sold;
   document.getElementById("invPrice").value = item.price || 0;
@@ -256,6 +288,11 @@ function renderSuppliers() {
 
 document.getElementById("addSupplierBtn").addEventListener("click", () => {
   document.getElementById("supplierForm").style.display = "block";
+  
+  // تعبئة قائمة الأدوية في طلبات الشركات
+  const select = document.getElementById("supName");
+  select.innerHTML = '<option value="">-- اختر الدواء --</option>' + 
+    ALL_MEDICINES.map(med => `<option value="${med}">${med}</option>`).join("");
 });
 
 document.getElementById("cancelSupBtn").addEventListener("click", () => {
@@ -264,11 +301,11 @@ document.getElementById("cancelSupBtn").addEventListener("click", () => {
 
 document.getElementById("saveSupBtn").addEventListener("click", () => {
   const company = document.getElementById("supCompany").value.trim();
-  const name = document.getElementById("supName").value.trim();
+  const name = document.getElementById("supName").value;
   const qty = parseInt(document.getElementById("supQty").value) || 0;
   const date = document.getElementById("supDate").value;
 
-  if (!name || !company) return alert("أدخل بيانات الشركة والدواء");
+  if (!name || !company) return alert("يرجى اختيار الدواء وإدخال اسم الشركة");
 
   const sup = getSuppliers();
   sup.push({ company, name, qty, date });
@@ -312,11 +349,7 @@ function printInvoice(index) {
       th { background: #f0f0f0; } .total { text-align: left; font-weight: bold; font-size: 18px; margin-top: 15px; }
     </style></head><body>
       <div class="header">
-        <div>
-          <h1 style="color:#0e9f6e;margin:0;">صيدلية المجيدي</h1>
-          <p>د. سامي محمد احمد | ترخيص: 80808080<br>هاتف: 773704939</p>
-        </div>
-        <!-- هنا تم إضافة مسار الشعار -->
+        <div><h1 style="color:#0e9f6e;margin:0;">صيدلية المجيدي</h1><p>د. سامي محمد احمد | ترخيص: 80808080<br>هاتف: 773704939</p></div>
         <img src="https://samialngar1989-glitch.github.io/pharmacy-website/images/logo.png" width="80">
       </div>
       <p><strong>فاتورة رقم:</strong> ${order.invoiceNumber} | <strong>التاريخ:</strong> ${new Date(order.date).toLocaleString("ar-SA")}</p>
@@ -324,7 +357,6 @@ function printInvoice(index) {
       <table><tr><th>المنتج</th><th>الكمية</th><th>السعر</th><th>المجموع</th></tr>${itemsHtml}</table>
       <div class="total">الإجمالي: ${order.total} ر.ي</div>
       <div style="text-align:left; margin-top:40px;">
-        <!-- هنا تم تعديل مسار الختم ليقرأ stamp.png -->
         <img src="https://samialngar1989-glitch.github.io/pharmacy-website/images/stamp.png" width="90" style="border-radius:50%; padding:5px;">
         <p>ختم الصيدلية</p>
       </div>
