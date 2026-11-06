@@ -268,50 +268,45 @@ document.getElementById("saveSupBtn").addEventListener("click", async () => {
   const qty = parseInt(document.getElementById("supQty").value) || 0;
   const date = document.getElementById("supDate").value;
 
-  // التحقق من المدخلات
-  if (!name || !company) {
-    return alert("⚠️ خطأ: يجب اختيار الدواء من القائمة وإدخال اسم الشركة");
-  }
+  if (!name || !company) return alert("⚠️ اختر الدواء وأدخل الشركة");
 
   const submitBtn = document.getElementById("saveSupBtn");
   submitBtn.textContent = "⏳ جاري الحفظ...";
   submitBtn.disabled = true;
 
   try {
-    console.log("محاولة إرسال البيانات:", { company, name, qty, date });
-
+    // إرسال الطلب لجوجل
     const response = await fetch(API_URL, {
       method: "POST",
-      body: JSON.stringify({ 
-        action: "addSupplier", 
-        supplier: { company, name, qty, date } 
-      }),
+      body: JSON.stringify({ action: "addSupplier", supplier: { company, name, qty, date } }),
       headers: { "Content-Type": "text/plain;charset=utf-8" }
     });
     
-    const result = await response.json();
-    console.log("رد جوجل شيت:", result);
+    // قراءة الرد
+    const textResult = await response.text();
+    
+    // عرض الرد في نافذة منبثقة (للتشخيص)
+    alert("رد السيرفر: " + textResult);
 
-    if (result.success) {
-      alert("✅ تم حفظ طلب الشراء في Google Sheets بنجاح");
+    // إذا كان الرد يحتوي على success
+    if (textResult.includes("success")) {
+      alert("✅ تم الحفظ بنجاح في جوجل شيت");
       document.getElementById("supplierForm").style.display = "none";
       document.getElementById("supCompany").value = "";
       document.getElementById("supQty").value = "";
       document.getElementById("supDate").value = "";
       loadSuppliers(); // تحديث الجدول
     } else {
-      alert("❌ رفض جوجل شيت الطلب. السبب: " + (result.error || "غير معروف"));
+      alert("❌ فشل الحفظ. راجع الرسالة أعلاه.");
     }
 
   } catch (err) {
-    console.error("خطأ في الاتصال:", err);
-    alert("❌ خطأ في الاتصال بالإنترنت أو بالسيرفر.");
+    alert("❌ خطأ في الاتصال بالإنترنت: " + err.message);
   } finally {
     submitBtn.textContent = "حفظ";
     submitBtn.disabled = false;
   }
 });
-
 /* ============================================================
    الطباعة والواتساب
    ============================================================ */
