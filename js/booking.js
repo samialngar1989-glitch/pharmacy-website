@@ -2,7 +2,7 @@
    booking.js — عرض السلة وإرسال الطلب لجوجل شيت
    ============================================================ */
 (function() {
-  const API_URL = "https://script.google.com/macros/s/AKfycbxtyvD8zQv2IsnaX0tYL8f0npfUJv8A7SVBTHeklRoE9yeq-M9r3DSvVnO5XDDXheVw-g/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbwVm6XWt0zFzdHdsXVBmiOBzODvxMLrpwshkND0Ao7MfUCqMoGqisvEb_in2m1HV0VoLw/exec";
   const WHATSAPP_NUMBER = "967773704939";
 
   const orderListEl = document.getElementById("orderList");
