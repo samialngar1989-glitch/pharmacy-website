@@ -1024,3 +1024,31 @@ body.dark .admin-link {
 body.dark .search-wrapper input {
   background: var(--bg-alt);
 }
+/* ============================================================
+   قسم الفيديو الإعلاني
+   ============================================================ */
+.video-wrapper {
+  max-width: 850px;
+  margin: 0 auto;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  border: 4px solid var(--primary-light);
+  background: #000;
+  position: relative;
+  padding-bottom: 56.25%; /* نسبة أبعاد 16:9 */
+  height: 0;
+}
+
+.video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+body.dark .video-wrapper {
+  border-color: var(--bg-alt);
+}
