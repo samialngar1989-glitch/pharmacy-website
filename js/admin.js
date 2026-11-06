@@ -268,19 +268,47 @@ document.getElementById("saveSupBtn").addEventListener("click", async () => {
   const qty = parseInt(document.getElementById("supQty").value) || 0;
   const date = document.getElementById("supDate").value;
 
-  if (!name || !company) return alert("اختر الدواء وأدخل الشركة");
+  // التحقق من المدخلات
+  if (!name || !company) {
+    return alert("⚠️ خطأ: يجب اختيار الدواء من القائمة وإدخال اسم الشركة");
+  }
+
+  const submitBtn = document.getElementById("saveSupBtn");
+  submitBtn.textContent = "⏳ جاري الحفظ...";
+  submitBtn.disabled = true;
 
   try {
-    await fetch(API_URL, {
+    console.log("محاولة إرسال البيانات:", { company, name, qty, date });
+
+    const response = await fetch(API_URL, {
       method: "POST",
-      body: JSON.stringify({ action: "addSupplier", supplier: { company, name, qty, date } }),
+      body: JSON.stringify({ 
+        action: "addSupplier", 
+        supplier: { company, name, qty, date } 
+      }),
       headers: { "Content-Type": "text/plain;charset=utf-8" }
     });
-    alert("✅ تم حفظ طلب الشراء في Google Sheets");
-    document.getElementById("supplierForm").style.display = "none";
-    loadSuppliers(); // تحديث الجدول
+    
+    const result = await response.json();
+    console.log("رد جوجل شيت:", result);
+
+    if (result.success) {
+      alert("✅ تم حفظ طلب الشراء في Google Sheets بنجاح");
+      document.getElementById("supplierForm").style.display = "none";
+      document.getElementById("supCompany").value = "";
+      document.getElementById("supQty").value = "";
+      document.getElementById("supDate").value = "";
+      loadSuppliers(); // تحديث الجدول
+    } else {
+      alert("❌ رفض جوجل شيت الطلب. السبب: " + (result.error || "غير معروف"));
+    }
+
   } catch (err) {
-    alert("❌ حدث خطأ");
+    console.error("خطأ في الاتصال:", err);
+    alert("❌ خطأ في الاتصال بالإنترنت أو بالسيرفر.");
+  } finally {
+    submitBtn.textContent = "حفظ";
+    submitBtn.disabled = false;
   }
 });
 
