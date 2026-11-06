@@ -2,7 +2,7 @@
    main.js — جلب البيانات من Google Sheets + إدارة السلة
    ============================================================ */
 (function() {
-  const API_URL = "https://script.google.com/macros/s/AKfycbxtyvD8zQv2IsnaX0tYL8f0npfUJv8A7SVBTHeklRoE9yeq-M9r3DSvVnO5XDDXheVw-g/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbwVm6XWt0zFzdHdsXVBmiOBzODvxMLrpwshkND0Ao7MfUCqMoGqisvEb_in2m1HV0VoLw/exec";
 
   /* ---------------- الوضع الليلي ---------------- */
   const darkBtn = document.getElementById("darkBtn");
