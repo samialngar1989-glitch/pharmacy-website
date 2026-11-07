@@ -1,8 +1,5 @@
-/* ============================================================
-   booking.js — عرض السلة وإرسال الطلب لجوجل شيت
-   ============================================================ */
 (function() {
-  const API_URL = "https://script.google.com/macros/s/AKfycbwVm6XWt0zFzdHdsXVBmiOBzODvxMLrpwshkND0Ao7MfUCqMoGqisvEb_in2m1HV0VoLw/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbyUOI3f_H9shabQfW1mL1UYOMdwvbAlQKRUw_hQ7mrBhlMzojaJBHUruz4GHD5IKDez/exec";
   const WHATSAPP_NUMBER = "967773704939";
 
   const orderListEl = document.getElementById("orderList");
@@ -12,7 +9,6 @@
   const addressLabel = document.getElementById("addressLabel");
   const addressInput = document.getElementById("customerAddress");
 
-  /* ---------------- الإشعارات ---------------- */
   window.showToast = function(text, isError = false) {
     let toast = document.getElementById("toast");
     if (!toast) {
@@ -26,15 +22,8 @@
     toast._timer = setTimeout(() => (toast.className = "toast"), 3000);
   };
 
-  /* ---------------- السلة ---------------- */
-  function getCart() {
-    return JSON.parse(localStorage.getItem("pharmacy_cart") || "[]");
-  }
-
-  function saveCart(cart) {
-    localStorage.setItem("pharmacy_cart", JSON.stringify(cart));
-    renderCart();
-  }
+  function getCart() { return JSON.parse(localStorage.getItem("pharmacy_cart") || "[]"); }
+  function saveCart(cart) { localStorage.setItem("pharmacy_cart", JSON.stringify(cart)); renderCart(); }
 
   function renderCart() {
     if (!orderListEl) return;
@@ -81,10 +70,8 @@
     saveCart(cart);
   };
 
-  // الاستماع لتحديثات main.js
   window.addEventListener("cartUpdated", renderCart);
 
-  /* ---------------- حقول التوصيل ---------------- */
   if (deliverySel && addressLabel && addressInput) {
     deliverySel.addEventListener("change", () => {
       const isDelivery = deliverySel.value === "توصيل للمنزل";
@@ -93,16 +80,12 @@
     });
   }
 
-  /* ---------------- إرسال الطلب ---------------- */
   if (orderForm) {
     orderForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const cart = getCart();
 
-      if (cart.length === 0) {
-        window.showToast("⚠️ أضف منتجًا واحدًا على الأقل", true);
-        return;
-      }
+      if (cart.length === 0) return window.showToast("⚠️ أضف منتجًا واحدًا على الأقل", true);
 
       const name = document.getElementById("customerName").value.trim();
       const phone = document.getElementById("customerPhone").value.trim();
@@ -124,23 +107,16 @@
           method: "POST",
           body: JSON.stringify({
             action: "addOrder",
-            order: {
-              name, phone, method, address, coupon, notes,
-              items: cart, total,
-              prescription: file ? file.name : null
-            }
+            order: { name, phone, method, address, coupon, notes, items: cart, total, prescription: file ? file.name : null }
           }),
           headers: { "Content-Type": "text/plain;charset=utf-8" }
         });
 
-        // رسالة واتساب
         let msg = "🛒 *طلب جديد من صيدلية المجيدي*\n──────────────────\n";
         msg += `👤 *الاسم:* ${name}\n📱 *الجوال:* ${phone}\n📦 *طريقة الاستلام:* ${method}\n`;
         if (method === "توصيل للمنزل") msg += `📍 *العنوان:* ${address}\n`;
         msg += "──────────────────\n🧾 *المنتجات:*\n";
-        cart.forEach((item, i) => {
-          msg += `${i + 1}. ${item.name} × ${item.qty} = ${item.price * item.qty} ر.ي\n`;
-        });
+        cart.forEach((item, i) => { msg += `${i + 1}. ${item.name} × ${item.qty} = ${item.price * item.qty} ر.ي\n`; });
         msg += `──────────────────\n💰 *الإجمالي:* ${total} ر.ي\n`;
         if (coupon) msg += `🎟️ *كود الخصم:* ${coupon}\n`;
         if (file) msg += `📎 *وصفة طبية:* ${file.name}\n`;
@@ -149,13 +125,12 @@
 
         window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
 
-        // تفريغ السلة
         localStorage.removeItem("pharmacy_cart");
         renderCart();
         orderForm.reset();
         if (addressLabel) addressLabel.style.display = "none";
-        
         window.showToast("✅ تم إرسال الطلب وفتح واتساب");
+        window.closeCartModal();
 
       } catch (error) {
         console.error(error);
@@ -167,6 +142,5 @@
     });
   }
 
-  // تشغيل أولي عند تحميل الصفحة
   document.addEventListener("DOMContentLoaded", renderCart);
 })();
