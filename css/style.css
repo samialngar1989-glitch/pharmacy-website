@@ -1024,9 +1024,13 @@ body.dark .admin-link {
 body.dark .search-wrapper input {
   background: var(--bg-alt);
 }
+/* ... (باقي كود CSS القديم يبقى كما هو) ... */
+
 /* ============================================================
-   قسم الفيديو الإعلاني
+   إضافات جديدة: الفيديو، نفاذ المخزون، السلة المتروكة
    ============================================================ */
+
+/* الفيديو الإعلاني */
 .video-wrapper {
   max-width: 850px;
   margin: 0 auto;
@@ -1052,3 +1056,39 @@ body.dark .search-wrapper input {
 body.dark .video-wrapper {
   border-color: var(--bg-alt);
 }
+
+/* حالة نفاذ المخزون */
+.btn-disabled {
+  background: #9ca3af !important;
+  color: #fff !important;
+  cursor: not-allowed !important;
+  border-color: #9ca3af !important;
+}
+
+.product-badge.out-stock {
+  background: #111; /* أسود */
+  color: #fff;
+}
+
+/* نافذة السلة المتروكة */
+.cart-modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6); z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.cart-modal-box {
+  background: var(--bg); padding: 30px; border-radius: 12px;
+  text-align: center; max-width: 400px; width: 90%;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  animation: popIn 0.3s ease-out;
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.cart-modal-icon { font-size: 4rem; margin-bottom: 10px; }
+.cart-modal-box h2 { color: var(--primary); margin-bottom: 10px; font-size: 1.3rem; }
+.cart-modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: center; }
