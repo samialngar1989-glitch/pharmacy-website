@@ -57,6 +57,8 @@
             <option value="قيد التجهيز">قيد التجهيز</option>
             <option value="تم التسليم">تم التسليم</option>
           </select>
+          <!-- زر الحملة التسويقية -->
+          <button id="whatsappCampaignBtn" class="btn btn-primary btn-sm" style="background:#25d366; border-color:#25d366;">📢 حملة تسويقية</button>
         </div>
         <div id="ordersContainer"></div>
       </div>
@@ -64,27 +66,13 @@
       <!-- المخزون -->
       <div id="tab-inventory" class="tab-content">
         <div class="admin-toolbar">
-          <button id="addInventoryBtn" class="btn btn-primary btn-sm">➕ إضافة دواء</button>
+          <button id="refreshInventoryBtn" class="btn btn-primary btn-sm">🔄 تحديث المخزون</button>
         </div>
         
-        <div id="inventoryForm" style="display:none; background:var(--bg); padding:15px; border-radius:8px; margin-bottom:15px;">
-          <input type="hidden" id="editInvIndex" value="-1">
-          <label>اسم الدواء (من القائمة):</label>
-          <select id="invName" style="width:100%; padding:8px; margin-bottom:8px;">
-            <option value="بنادول إكسترا 500mg">بنادول إكسترا 500mg</option>
-            <option value="باراسيتامول 500mg">باراسيتامول 500mg</option>
-            <option value="بروفين 400mg">بروفين 400mg</option>
-            <option value="جهاز قياس الضغط الرقمي">جهاز قياس الضغط الرقمي</option>
-            <option value="جهاز قياس السكر">جهاز قياس السكر</option>
-          </select>
-          <label>الكمية الكلية:</label>
-          <input type="number" id="invQty" placeholder="الكلية" style="width:100%; padding:8px; margin-bottom:8px;">
-          <label>المباع:</label>
-          <input type="number" id="invSold" placeholder="المباع" style="width:100%; padding:8px; margin-bottom:8px;">
-          <label>سعر الوحدة (لحساب التراكمي):</label>
-          <input type="number" id="invPrice" placeholder="السعر" style="width:100%; padding:8px; margin-bottom:8px;">
-          <button id="saveInvBtn" class="btn btn-primary btn-sm">حفظ</button>
-          <button id="cancelInvBtn" class="btn btn-outline btn-sm">إلغاء</button>
+        <!-- تنبيه الصلاحية -->
+        <div id="expiryWarningBox" style="display:none; background:#fee2e2; color:#991b1b; padding:15px; border-radius:8px; margin-bottom:15px;">
+          <h3>⚠️ تنبيهات الصلاحية (تنتهي خلال 3 أشهر):</h3>
+          <ul id="expiryWarningList" style="padding-right: 20px; margin-top: 10px;"></ul>
         </div>
 
         <div id="inventoryContainer" style="overflow-x:auto;"></div>
@@ -93,22 +81,11 @@
       <!-- الشركات -->
       <div id="tab-suppliers" class="tab-content">
         <div class="admin-toolbar">
-          <button id="addSupplierBtn" class="btn btn-primary btn-sm">➕ إضافة طلب شراء</button>
+          <button id="refreshSupBtn" class="btn btn-primary btn-sm">🔄 تحديث طلبات الشركات</button>
         </div>
-        <div id="supplierForm" style="display:none; background:var(--bg); padding:15px; border-radius:8px; margin-bottom:15px;">
-          <label>اسم الشركة:</label>
-          <input type="text" id="supCompany" placeholder="الشركة" style="width:100%; padding:8px; margin-bottom:8px;">
-          <label>الدواء / النوع:</label>
-<select id="supName" style="width:100%; padding:8px; margin-bottom:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text);">
-  <option value="">-- اختر الدواء --</option>
-</select>
-          <label>العدد المطلوب:</label>
-          <input type="number" id="supQty" placeholder="العدد" style="width:100%; padding:8px; margin-bottom:8px;">
-          <label>موعد الاستلام:</label>
-          <input type="date" id="supDate" style="width:100%; padding:8px; margin-bottom:8px;">
-          <button id="saveSupBtn" class="btn btn-primary btn-sm">حفظ</button>
-          <button id="cancelSupBtn" class="btn btn-outline btn-sm">إلغاء</button>
-        </div>
+        <p style="font-size: 0.9rem; color: gray; margin-bottom: 15px;">
+          * ملاحظة: يتم إضافة طلبات الشركات مباشرة من خلال ملف Google Sheets (ورقة Suppliers).
+        </p>
         <div id="suppliersContainer" style="overflow-x:auto;"></div>
       </div>
     </div>
