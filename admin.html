@@ -38,6 +38,7 @@
       <button class="tab-btn active" data-tab="tab-orders">📦 الطلبات</button>
       <button class="tab-btn" data-tab="tab-inventory">📊 المخزون</button>
       <button class="tab-btn" data-tab="tab-suppliers">🚚 طلبات الشركات</button>
+      <button class="tab-btn" data-tab="tab-settings">⚙️ الإعدادات</button>
     </div>
 
     <div class="admin-container">
@@ -50,15 +51,13 @@
           <div class="stat-card done"><span class="stat-num" id="statDone">0</span><span class="stat-label">تم التسليم</span></div>
         </div>
         <div class="admin-toolbar">
-          <input type="text" id="searchInput" placeholder="🔍 ابحث بالاسم أو الجوال..." />
+          <input type="text" id="searchInput" placeholder="🔍 ابحث..." />
           <select id="filterStatus">
             <option value="all">كل الحالات</option>
             <option value="قيد الانتظار">قيد الانتظار</option>
             <option value="قيد التجهيز">قيد التجهيز</option>
             <option value="تم التسليم">تم التسليم</option>
           </select>
-          <!-- زر تحديث الشريط الإعلاني -->
-          <button id="whatsappCampaignBtn" class="btn btn-primary btn-sm" style="background:#f59e0b; border-color:#f59e0b;">📢 تحديث الشريط الإعلاني</button>
         </div>
         <div id="ordersContainer"></div>
       </div>
@@ -68,13 +67,10 @@
         <div class="admin-toolbar">
           <button id="refreshInventoryBtn" class="btn btn-primary btn-sm">🔄 تحديث المخزون</button>
         </div>
-        
-        <!-- تنبيه الصلاحية -->
         <div id="expiryWarningBox" style="display:none; background:#fee2e2; color:#991b1b; padding:15px; border-radius:8px; margin-bottom:15px;">
           <h3>⚠️ تنبيهات الصلاحية (تنتهي خلال 3 أشهر):</h3>
           <ul id="expiryWarningList" style="padding-right: 20px; margin-top: 10px;"></ul>
         </div>
-
         <div id="inventoryContainer" style="overflow-x:auto;"></div>
       </div>
 
@@ -88,6 +84,40 @@
         </p>
         <div id="suppliersContainer" style="overflow-x:auto;"></div>
       </div>
+
+      <!-- الإعدادات (جديد) -->
+      <div id="tab-settings" class="tab-content">
+        <div class="settings-form" style="background:var(--bg); padding:20px; border-radius:8px; max-width:700px; margin:0 auto;">
+          <h3 style="margin-bottom:20px; color:var(--primary-dark);">⚙️ إعدادات الموقع</h3>
+          
+          <label style="display:block; margin-bottom:10px; font-weight:bold;">اسم الصيدلية:</label>
+          <input type="text" id="setPharmacyName" style="width:100%; padding:10px; margin-bottom:15px; border-radius:6px; border:1px solid var(--border);">
+
+          <label style="display:block; margin-bottom:10px; font-weight:bold;">اسم الدكتور:</label>
+          <input type="text" id="setDrName" style="width:100%; padding:10px; margin-bottom:15px; border-radius:6px; border:1px solid var(--border);">
+
+          <label style="display:block; margin-bottom:10px; font-weight:bold;">رقم الترخيص:</label>
+          <input type="text" id="setLicense" style="width:100%; padding:10px; margin-bottom:15px; border-radius:6px; border:1px solid var(--border);">
+
+          <label style="display:block; margin-bottom:10px; font-weight:bold;">رقم الهاتف (مثال: 773704939):</label>
+          <input type="text" id="setPhone" style="width:100%; padding:10px; margin-bottom:15px; border-radius:6px; border:1px solid var(--border);">
+
+          <label style="display:block; margin-bottom:10px; font-weight:bold;">رابط فيديو اليوتيوب:</label>
+          <input type="text" id="setVideoUrl" placeholder="https://youtu.be/..." style="width:100%; padding:10px; margin-bottom:15px; border-radius:6px; border:1px solid var(--border);">
+
+          <label style="display:block; margin-bottom:10px; font-weight:bold;">نص الشريط الإعلاني (Ticker):</label>
+          <input type="text" id="setTickerMessage" style="width:100%; padding:10px; margin-bottom:15px; border-radius:6px; border:1px solid var(--border);">
+
+          <label style="display:block; margin-bottom:10px; font-weight:bold;">سياسة الإرجاع:</label>
+          <textarea id="setReturnPolicy" rows="3" style="width:100%; padding:10px; margin-bottom:15px; border-radius:6px; border:1px solid var(--border);"></textarea>
+
+          <label style="display:block; margin-bottom:10px; font-weight:bold;">نص التنبيه الهام:</label>
+          <textarea id="setWarningText" rows="3" style="width:100%; padding:10px; margin-bottom:20px; border-radius:6px; border:1px solid var(--border);"></textarea>
+
+          <button id="saveSettingsBtn" class="btn btn-primary btn-block">💾 حفظ الإعدادات</button>
+        </div>
+      </div>
+
     </div>
   </div>
 
