@@ -1,3 +1,6 @@
+/* ============================================================
+   admin.js — لوحة التحكم الشاملة المتصلة بـ Google Sheets
+   ============================================================ */
 const API_URL = "https://script.google.com/macros/s/AKfycbyUOI3f_H9shabQfW1mL1UYOMdwvbAlQKRUw_hQ7mrBhlMzojaJBHUruz4GHD5IKDez/exec";
 const ADMIN_PASSWORD = "almajidi2025";
 const SESSION_KEY = "pharmacy_admin_logged";
@@ -8,6 +11,7 @@ const adminPanel = document.getElementById("adminPanel");
 let globalOrders = [];
 let globalProducts = [];
 
+// الدخول
 if (localStorage.getItem(SESSION_KEY) === "1") {
   loginScreen.style.display = "none";
   adminPanel.style.display = "block";
@@ -33,6 +37,7 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
   window.location.reload();
 });
 
+// التبويبات
 document.querySelectorAll(".tab-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
@@ -42,6 +47,7 @@ document.querySelectorAll(".tab-btn").forEach(btn => {
   });
 });
 
+// الوضع الليلي
 const darkBtn = document.getElementById("darkBtn");
 if (darkBtn) {
   function applyDarkMode(isDark) {
@@ -52,6 +58,9 @@ if (darkBtn) {
   darkBtn.addEventListener("click", () => applyDarkMode(!document.body.classList.contains("dark")));
 }
 
+/* ============================================================
+   جلب كل البيانات
+   ============================================================ */
 async function loadAllData() {
   await Promise.all([loadOrders(), loadProducts(), loadSuppliers()]);
 }
@@ -94,11 +103,15 @@ async function loadSuppliers() {
   }
 }
 
+/* ============================================================
+   عرض الطلبات
+   ============================================================ */
 function renderOrders() {
   const container = document.getElementById("ordersContainer");
   const search = document.getElementById("searchInput").value.toLowerCase();
   const status = document.getElementById("filterStatus").value;
 
+  // الإحصائيات
   document.getElementById("statTotal").textContent = globalOrders.length;
   document.getElementById("statPending").textContent = globalOrders.filter(o => o.Status === "قيد الانتظار").length;
   document.getElementById("statPreparing").textContent = globalOrders.filter(o => o.Status === "قيد التجهيز").length;
@@ -154,6 +167,9 @@ function renderOrders() {
 document.getElementById("searchInput").addEventListener("input", renderOrders);
 document.getElementById("filterStatus").addEventListener("change", renderOrders);
 
+/* ============================================================
+   تحديث حالة الطلب
+   ============================================================ */
 async function updateStatus(invoiceNum, newStatus) {
   try {
     await fetch(API_URL, {
@@ -161,6 +177,7 @@ async function updateStatus(invoiceNum, newStatus) {
       body: JSON.stringify({ action: "updateOrderStatus", invoiceNum: invoiceNum, status: newStatus }),
       headers: { "Content-Type": "text/plain;charset=utf-8" }
     });
+    
     loadAllData();
     alert("✅ تم تحديث الحالة وخصم المخزون في Google Sheets");
   } catch (err) {
@@ -168,6 +185,9 @@ async function updateStatus(invoiceNum, newStatus) {
   }
 }
 
+/* ============================================================
+   عرض المخزون وتنبيه الصلاحية
+   ============================================================ */
 function renderInventory() {
   const container = document.getElementById("inventoryContainer");
   const expiryBox = document.getElementById("expiryWarningBox");
@@ -224,42 +244,63 @@ function renderInventory() {
 
 document.getElementById("refreshInventoryBtn").addEventListener("click", loadProducts);
 
+/* ============================================================
+   عرض طلبات الشركات
+   ============================================================ */
 function renderSuppliers(suppliers) {
   const container = document.getElementById("suppliersContainer");
+  
   if (suppliers.length === 0) {
     container.innerHTML = `<p class="empty-state">لا توجد طلبات شراء مسجلة.</p>`;
     return;
   }
+
   let html = `<table class="data-table"><thead><tr>
     <th>التاريخ</th><th>الشركة</th><th>الدواء</th><th>العدد</th><th>موعد الاستلام</th>
   </tr></thead><tbody>`;
+
   suppliers.forEach(s => {
     let dateStr = s.Date ? new Date(s.Date).toLocaleDateString("ar-SA") : "";
-    html += `<tr><td>${dateStr}</td><td>${s.Company}</td><td>${s.ItemName}</td><td>${s.Qty}</td><td>${s.ExpectedDate || 'غير محدد'}</td></tr>`;
+    html += `<tr>
+      <td>${dateStr}</td><td>${s.Company}</td><td>${s.ItemName}</td><td>${s.Qty}</td><td>${s.ExpectedDate || 'غير محدد'}</td>
+    </tr>`;
   });
+
   container.innerHTML = html + `</tbody></table>`;
 }
 
 document.getElementById("refreshSupBtn").addEventListener("click", loadSuppliers);
 
 /* ============================================================
-   الحملة التسويقية عبر واتساب
+   تحديث الشريط الإعلاني في الموقع
    ============================================================ */
-document.getElementById("whatsappCampaignBtn").addEventListener("click", () => {
-  if (globalOrders.length === 0) return alert("لا يوجد عملاء بعد.");
-  
-  const message = prompt("أدخلي نص الرسالة التي تريدين إرسالها لكل العملاء:");
+document.getElementById("whatsappCampaignBtn").addEventListener("click", async () => {
+  const message = prompt("أدخلي النص الجديد الذي سيظهر في الشريط المتحرك أعلى الموقع:");
   if (!message) return;
-  
-  const phones = [...new Set(globalOrders.map(o => o.Phone))];
-  alert(`سيتم فتح ${phones.length} محادثة واتساب. يرجى السماح للنوافذ المنبثقة.`);
-  
-  phones.forEach((phone, index) => {
-    setTimeout(() => {
-      const cleanPhone = phone.startsWith("0") ? "967" + phone.substring(1) : phone;
-      window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`, "_blank");
-    }, index * 1500);
-  });
+
+  const btn = document.getElementById("whatsappCampaignBtn");
+  btn.textContent = "⏳ جاري التحديث...";
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({ action: "updateTicker", message: message }),
+      headers: { "Content-Type": "text/plain;charset=utf-8" }
+    });
+    
+    const data = await res.json();
+    if (data.success) {
+      alert("✅ تم تحديث الشريط الإعلاني في الموقع بنجاح!");
+    } else {
+      alert("❌ حدث خطأ أثناء التحديث.");
+    }
+  } catch (e) {
+    alert("❌ خطأ في الاتصال بالخادم.");
+  } finally {
+    btn.textContent = "📢 تحديث الشريط الإعلاني";
+    btn.disabled = false;
+  }
 });
 
 /* ============================================================
