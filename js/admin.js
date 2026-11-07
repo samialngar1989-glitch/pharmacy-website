@@ -1,7 +1,4 @@
-/* ============================================================
-   admin.js — لوحة التحكم الشاملة المتصلة بـ Google Sheets
-   ============================================================ */
-const API_URL = "https://script.google.com/macros/s/AKfycbwVm6XWt0zFzdHdsXVBmiOBzODvxMLrpwshkND0Ao7MfUCqMoGqisvEb_in2m1HV0VoLw/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyUOI3f_H9shabQfW1mL1UYOMdwvbAlQKRUw_hQ7mrBhlMzojaJBHUruz4GHD5IKDez/exec";
 const ADMIN_PASSWORD = "almajidi2025";
 const SESSION_KEY = "pharmacy_admin_logged";
 
@@ -11,7 +8,6 @@ const adminPanel = document.getElementById("adminPanel");
 let globalOrders = [];
 let globalProducts = [];
 
-// الدخول
 if (localStorage.getItem(SESSION_KEY) === "1") {
   loginScreen.style.display = "none";
   adminPanel.style.display = "block";
@@ -37,7 +33,6 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
   window.location.reload();
 });
 
-// التبويبات
 document.querySelectorAll(".tab-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
@@ -47,7 +42,6 @@ document.querySelectorAll(".tab-btn").forEach(btn => {
   });
 });
 
-// الوضع الليلي
 const darkBtn = document.getElementById("darkBtn");
 if (darkBtn) {
   function applyDarkMode(isDark) {
@@ -58,9 +52,6 @@ if (darkBtn) {
   darkBtn.addEventListener("click", () => applyDarkMode(!document.body.classList.contains("dark")));
 }
 
-/* ============================================================
-   جلب كل البيانات
-   ============================================================ */
 async function loadAllData() {
   await Promise.all([loadOrders(), loadProducts(), loadSuppliers()]);
 }
@@ -86,7 +77,6 @@ async function loadProducts() {
     const data = await res.json();
     globalProducts = data.products || [];
     renderInventory();
-    updateSupplierDropdown();
   } catch (err) {
     container.innerHTML = `<p class="empty-state" style="color:red;">خطأ في جلب المخزون.</p>`;
   }
@@ -104,15 +94,11 @@ async function loadSuppliers() {
   }
 }
 
-/* ============================================================
-   عرض الطلبات (مع زر الطباعة)
-   ============================================================ */
 function renderOrders() {
   const container = document.getElementById("ordersContainer");
   const search = document.getElementById("searchInput").value.toLowerCase();
   const status = document.getElementById("filterStatus").value;
 
-  // الإحصائيات
   document.getElementById("statTotal").textContent = globalOrders.length;
   document.getElementById("statPending").textContent = globalOrders.filter(o => o.Status === "قيد الانتظار").length;
   document.getElementById("statPreparing").textContent = globalOrders.filter(o => o.Status === "قيد التجهيز").length;
@@ -168,9 +154,6 @@ function renderOrders() {
 document.getElementById("searchInput").addEventListener("input", renderOrders);
 document.getElementById("filterStatus").addEventListener("change", renderOrders);
 
-/* ============================================================
-   تحديث حالة الطلب
-   ============================================================ */
 async function updateStatus(invoiceNum, newStatus) {
   try {
     await fetch(API_URL, {
@@ -178,8 +161,6 @@ async function updateStatus(invoiceNum, newStatus) {
       body: JSON.stringify({ action: "updateOrderStatus", invoiceNum: invoiceNum, status: newStatus }),
       headers: { "Content-Type": "text/plain;charset=utf-8" }
     });
-    
-    // إعادة تحميل البيانات لتحديث الأرقام والمخزون
     loadAllData();
     alert("✅ تم تحديث الحالة وخصم المخزون في Google Sheets");
   } catch (err) {
@@ -187,11 +168,10 @@ async function updateStatus(invoiceNum, newStatus) {
   }
 }
 
-/* ============================================================
-   عرض المخزون
-   ============================================================ */
 function renderInventory() {
   const container = document.getElementById("inventoryContainer");
+  const expiryBox = document.getElementById("expiryWarningBox");
+  const expiryList = document.getElementById("expiryWarningList");
   
   if (globalProducts.length === 0) {
     container.innerHTML = `<p class="empty-state">لا يوجد مخزون.</p>`;
@@ -202,10 +182,22 @@ function renderInventory() {
     <th>الدواء</th><th>السعر</th><th>الكلية</th><th>المباع</th><th>المتبقي</th><th>التراكمي</th>
   </tr></thead><tbody>`;
 
+  let expiringHTML = "";
+  const today = new Date();
+
   globalProducts.forEach(p => {
     const remaining = (p.TotalQty || 0) - (p.SoldQty || 0);
     const isLow = remaining <= 1;
     const totalRevenue = (p.SoldQty || 0) * (p.Price || 0);
+    
+    // فحص تاريخ الصلاحية
+    if (p.ExpiryDate) {
+      const expiryDate = new Date(p.ExpiryDate);
+      const diffDays = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+      if (diffDays <= 90 && diffDays >= 0) {
+        expiringHTML += `<li><strong>${p.Name}</strong> - ينتهي بعد ${diffDays} يوم</li>`;
+      }
+    }
     
     html += `<tr>
       <td>${p.Name}</td>
@@ -218,95 +210,58 @@ function renderInventory() {
   });
 
   container.innerHTML = html + `</tbody></table>`;
+
+  // عرض تنبيه الصلاحية
+  if (expiryBox && expiryList) {
+    if (expiringHTML) {
+      expiryBox.style.display = "block";
+      expiryList.innerHTML = expiringHTML;
+    } else {
+      expiryBox.style.display = "none";
+    }
+  }
 }
 
-// إعادة تحميل المخزون
-document.getElementById("addInventoryBtn").addEventListener("click", loadProducts);
-
-/* ============================================================
-   طلبات الشركات
-   ============================================================ */
-function updateSupplierDropdown() {
-  const select = document.getElementById("supName");
-  select.innerHTML = '<option value="">-- اختر الدواء --</option>' + 
-    globalProducts.map(p => `<option value="${p.Name}">${p.Name}</option>`).join("");
-}
+document.getElementById("refreshInventoryBtn").addEventListener("click", loadProducts);
 
 function renderSuppliers(suppliers) {
   const container = document.getElementById("suppliersContainer");
-  
   if (suppliers.length === 0) {
-    container.innerHTML = `<p class="empty-state">لا توجد طلبات شراء.</p>`;
+    container.innerHTML = `<p class="empty-state">لا توجد طلبات شراء مسجلة.</p>`;
     return;
   }
-
   let html = `<table class="data-table"><thead><tr>
     <th>التاريخ</th><th>الشركة</th><th>الدواء</th><th>العدد</th><th>موعد الاستلام</th>
   </tr></thead><tbody>`;
-
   suppliers.forEach(s => {
     let dateStr = s.Date ? new Date(s.Date).toLocaleDateString("ar-SA") : "";
-    html += `<tr>
-      <td>${dateStr}</td><td>${s.Company}</td><td>${s.ItemName}</td><td>${s.Qty}</td><td>${s.ExpectedDate || 'غير محدد'}</td>
-    </tr>`;
+    html += `<tr><td>${dateStr}</td><td>${s.Company}</td><td>${s.ItemName}</td><td>${s.Qty}</td><td>${s.ExpectedDate || 'غير محدد'}</td></tr>`;
   });
-
   container.innerHTML = html + `</tbody></table>`;
 }
 
-document.getElementById("addSupplierBtn").addEventListener("click", () => {
-  document.getElementById("supplierForm").style.display = "block";
-});
-document.getElementById("cancelSupBtn").addEventListener("click", () => {
-  document.getElementById("supplierForm").style.display = "none";
-});
 document.getElementById("refreshSupBtn").addEventListener("click", loadSuppliers);
 
-document.getElementById("saveSupBtn").addEventListener("click", async () => {
-  const company = document.getElementById("supCompany").value.trim();
-  const name = document.getElementById("supName").value;
-  const qty = parseInt(document.getElementById("supQty").value) || 0;
-  const date = document.getElementById("supDate").value;
-
-  if (!name || !company) return alert("⚠️ اختر الدواء وأدخل الشركة");
-
-  const submitBtn = document.getElementById("saveSupBtn");
-  submitBtn.textContent = "⏳ جاري الحفظ...";
-  submitBtn.disabled = true;
-
-  try {
-    // إرسال الطلب لجوجل
-    const response = await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({ action: "addSupplier", supplier: { company, name, qty, date } }),
-      headers: { "Content-Type": "text/plain;charset=utf-8" }
-    });
-    
-    // قراءة الرد
-    const textResult = await response.text();
-    
-    // عرض الرد في نافذة منبثقة (للتشخيص)
-    alert("رد السيرفر: " + textResult);
-
-    // إذا كان الرد يحتوي على success
-    if (textResult.includes("success")) {
-      alert("✅ تم الحفظ بنجاح في جوجل شيت");
-      document.getElementById("supplierForm").style.display = "none";
-      document.getElementById("supCompany").value = "";
-      document.getElementById("supQty").value = "";
-      document.getElementById("supDate").value = "";
-      loadSuppliers(); // تحديث الجدول
-    } else {
-      alert("❌ فشل الحفظ. راجع الرسالة أعلاه.");
-    }
-
-  } catch (err) {
-    alert("❌ خطأ في الاتصال بالإنترنت: " + err.message);
-  } finally {
-    submitBtn.textContent = "حفظ";
-    submitBtn.disabled = false;
-  }
+/* ============================================================
+   الحملة التسويقية عبر واتساب
+   ============================================================ */
+document.getElementById("whatsappCampaignBtn").addEventListener("click", () => {
+  if (globalOrders.length === 0) return alert("لا يوجد عملاء بعد.");
+  
+  const message = prompt("أدخلي نص الرسالة التي تريدين إرسالها لكل العملاء:");
+  if (!message) return;
+  
+  const phones = [...new Set(globalOrders.map(o => o.Phone))];
+  alert(`سيتم فتح ${phones.length} محادثة واتساب. يرجى السماح للنوافذ المنبثقة.`);
+  
+  phones.forEach((phone, index) => {
+    setTimeout(() => {
+      const cleanPhone = phone.startsWith("0") ? "967" + phone.substring(1) : phone;
+      window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`, "_blank");
+    }, index * 1500);
+  });
 });
+
 /* ============================================================
    الطباعة والواتساب
    ============================================================ */
