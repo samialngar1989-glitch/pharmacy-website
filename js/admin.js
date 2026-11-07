@@ -7,6 +7,7 @@ const adminPanel = document.getElementById("adminPanel");
 
 let globalOrders = [];
 let globalProducts = [];
+let globalSettings = {}; // 💡 متغير جديد لحفظ الإعدادات لاستخدامها في الفاتورة
 
 // الدخول
 if (localStorage.getItem(SESSION_KEY) === "1") {
@@ -105,6 +106,8 @@ async function loadSettings() {
     const res = await fetch(`${API_URL}?action=getSettings`);
     const data = await res.json();
     if (data.settings) {
+      globalSettings = data.settings; // 💡 حفظ الإعدادات في المتغير العام
+      
       const s = data.settings;
       document.getElementById("setPharmacyName").value = s.PharmacyName || "";
       document.getElementById("setDrName").value = s.DrName || "";
@@ -146,6 +149,7 @@ document.getElementById("saveSettingsBtn").addEventListener("click", async () =>
     const data = await res.json();
     if (data.success) {
       alert("✅ تم حفظ الإعدادات بنجاح! سيتم تطبيقها على الموقع فوراً.");
+      globalSettings = newSettings; // تحديث المتغير العام فوراً
     } else {
       alert("❌ فشل الحفظ. رد جوجل: " + JSON.stringify(data));
     }
@@ -322,7 +326,7 @@ document.getElementById("refreshSupBtn").addEventListener("click", loadSuppliers
    الطباعة والواتساب
    ============================================================ */
 function sendWhatsApp(name, phone, invoiceNum) {
-  let msg = `*صيدلية المجيدي*\nمرحباً ${name}،\nنود إبلاغك بأن طلبك (فاتورة #${invoiceNum}) قيد التجهيز.\nشكراً لثقتكم بنا 🌿`;
+  let msg = `*${globalSettings.PharmacyName || 'صيدلية المجيدي'}*\nمرحباً ${name}،\nنود إبلاغك بأن طلبك (فاتورة #${invoiceNum}) قيد التجهيز.\nشكراً لثقتكم بنا 🌿`;
   window.open(`https://wa.me/${phone.startsWith("0") ? "967" + phone.substring(1) : phone}?text=${encodeURIComponent(msg)}`, "_blank");
 }
 
@@ -333,6 +337,12 @@ function printInvoice(invoiceNum) {
   let items = [];
   try { items = JSON.parse(order.Items); } catch(e) {}
   const itemsHtml = items.map(item => `<tr><td>${item.name}</td><td>${item.qty}</td><td>${item.price} ر.ي</td><td>${item.price * item.qty} ر.ي</td></tr>`).join("");
+
+  // 💡 سحب البيانات من الإعدادات (أو استخدام القيم الافتراضية إذا كانت فارغة)
+  let phName = globalSettings.PharmacyName || "صيدلية المجيدي";
+  let drName = globalSettings.DrName || "د. سامي محمد احمد";
+  let lic = globalSettings.License || "80808080";
+  let phone = globalSettings.Phone || "773704939";
 
   const printWindow = window.open('', '_blank');
   if (!printWindow) return alert("يرجى السماح بالنوافذ المنبثقة.");
@@ -346,7 +356,10 @@ function printInvoice(invoiceNum) {
       th { background: #f0f0f0; } .total { text-align: left; font-weight: bold; font-size: 18px; margin-top: 15px; }
     </style></head><body>
       <div class="header">
-        <div><h1 style="color:#0e9f6e;margin:0;">صيدلية المجيدي</h1><p>د. سامي محمد احمد | ترخيص: 80808080<br>هاتف: 773704939</p></div>
+        <div>
+          <h1 style="color:#0e9f6e;margin:0;">${phName}</h1>
+          <p>${drName} | ترخيص: ${lic}<br>هاتف: ${phone}</p>
+        </div>
         <img src="https://samialngar1989-glitch.github.io/pharmacy-website/images/logo.png" width="80">
       </div>
       <p><strong>فاتورة رقم:</strong> ${order.InvoiceNum} | <strong>التاريخ:</strong> ${new Date(order.Date).toLocaleString("ar-SA")}</p>
