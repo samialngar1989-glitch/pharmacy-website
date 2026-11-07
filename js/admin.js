@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbzH_fiKERFvtR-aJ0yGOWgkrKYwpjg0jMKl8uSP-mG3HbHp_7DnwUMwplINmSpOxoQCDQ/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzmLpjpb8zJbcL8P91hYcg47TWKABVR2bV0MY3sFRTM_I-01Tfg-TyKIs7F5hZt3GYx3w/exec";
 const ADMIN_PASSWORD = "almajidi2025";
 const SESSION_KEY = "pharmacy_admin_logged";
 
@@ -56,7 +56,7 @@ if (darkBtn) {
 }
 
 async function loadAllData() {
-  await Promise.all([loadOrders(), loadProducts(), loadSuppliers()]);
+  await Promise.all([loadOrders(), loadProducts(), loadSuppliers(), loadSettings()]);
 }
 
 async function loadOrders() {
@@ -97,6 +97,69 @@ async function loadSuppliers() {
   }
 }
 
+/* ============================================================
+   جلب وحفظ الإعدادات
+   ============================================================ */
+async function loadSettings() {
+  try {
+    const res = await fetch(`${API_URL}?action=getSettings`);
+    const data = await res.json();
+    if (data.settings) {
+      const s = data.settings;
+      document.getElementById("setPharmacyName").value = s.PharmacyName || "";
+      document.getElementById("setDrName").value = s.DrName || "";
+      document.getElementById("setLicense").value = s.License || "";
+      document.getElementById("setPhone").value = s.Phone || "";
+      document.getElementById("setVideoUrl").value = s.VideoUrl || "";
+      document.getElementById("setTickerMessage").value = s.TickerMessage || "";
+      document.getElementById("setReturnPolicy").value = s.ReturnPolicy || "";
+      document.getElementById("setWarningText").value = s.WarningText || "";
+    }
+  } catch (err) {
+    console.error("خطأ في جلب الإعدادات:", err);
+  }
+}
+
+document.getElementById("saveSettingsBtn").addEventListener("click", async () => {
+  const btn = document.getElementById("saveSettingsBtn");
+  btn.textContent = "⏳ جاري الحفظ...";
+  btn.disabled = true;
+
+  const newSettings = {
+    PharmacyName: document.getElementById("setPharmacyName").value.trim(),
+    DrName: document.getElementById("setDrName").value.trim(),
+    License: document.getElementById("setLicense").value.trim(),
+    Phone: document.getElementById("setPhone").value.trim(),
+    VideoUrl: document.getElementById("setVideoUrl").value.trim(),
+    TickerMessage: document.getElementById("setTickerMessage").value.trim(),
+    ReturnPolicy: document.getElementById("setReturnPolicy").value.trim(),
+    WarningText: document.getElementById("setWarningText").value.trim()
+  };
+
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({ action: "updateSettings", settings: newSettings }),
+      headers: { "Content-Type": "text/plain;charset=utf-8" }
+    });
+    
+    const data = await res.json();
+    if (data.success) {
+      alert("✅ تم حفظ الإعدادات بنجاح! سيتم تطبيقها على الموقع فوراً.");
+    } else {
+      alert("❌ فشل الحفظ. رد جوجل: " + JSON.stringify(data));
+    }
+  } catch (e) {
+    alert("❌ خطأ في الاتصال بالخادم: " + e.message);
+  } finally {
+    btn.textContent = "💾 حفظ الإعدادات";
+    btn.disabled = false;
+  }
+});
+
+/* ============================================================
+   عرض الطلبات
+   ============================================================ */
 function renderOrders() {
   const container = document.getElementById("ordersContainer");
   const search = document.getElementById("searchInput").value.toLowerCase();
@@ -171,6 +234,9 @@ async function updateStatus(invoiceNum, newStatus) {
   }
 }
 
+/* ============================================================
+   عرض المخزون وتنبيه الصلاحية
+   ============================================================ */
 function renderInventory() {
   const container = document.getElementById("inventoryContainer");
   const expiryBox = document.getElementById("expiryWarningBox");
@@ -225,55 +291,32 @@ function renderInventory() {
 
 document.getElementById("refreshInventoryBtn").addEventListener("click", loadProducts);
 
+/* ============================================================
+   عرض طلبات الشركات
+   ============================================================ */
 function renderSuppliers(suppliers) {
   const container = document.getElementById("suppliersContainer");
+  
   if (suppliers.length === 0) {
     container.innerHTML = `<p class="empty-state">لا توجد طلبات شراء مسجلة.</p>`;
     return;
   }
+
   let html = `<table class="data-table"><thead><tr>
     <th>التاريخ</th><th>الشركة</th><th>الدواء</th><th>العدد</th><th>موعد الاستلام</th>
   </tr></thead><tbody>`;
+
   suppliers.forEach(s => {
     let dateStr = s.Date ? new Date(s.Date).toLocaleDateString("ar-SA") : "";
-    html += `<tr><td>${dateStr}</td><td>${s.Company}</td><td>${s.ItemName}</td><td>${s.Qty}</td><td>${s.ExpectedDate || 'غير محدد'}</td></tr>`;
+    html += `<tr>
+      <td>${dateStr}</td><td>${s.Company}</td><td>${s.ItemName}</td><td>${s.Qty}</td><td>${s.ExpectedDate || 'غير محدد'}</td>
+    </tr>`;
   });
+
   container.innerHTML = html + `</tbody></table>`;
 }
 
 document.getElementById("refreshSupBtn").addEventListener("click", loadSuppliers);
-
-/* ============================================================
-   تحديث الشريط الإعلاني في الموقع
-   ============================================================ */
-document.getElementById("whatsappCampaignBtn").addEventListener("click", async () => {
-  const message = prompt("أدخلي النص الجديد الذي سيظهر في الشريط المتحرك أعلى الموقع:");
-  if (!message) return;
-
-  const btn = document.getElementById("whatsappCampaignBtn");
-  btn.textContent = "⏳ جاري التحديث...";
-  btn.disabled = true;
-
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({ action: "updateTicker", message: message }),
-      headers: { "Content-Type": "text/plain;charset=utf-8" }
-    });
-    
-    const data = await res.json();
-    if (data.success) {
-      alert("✅ تم تحديث الشريط الإعلاني في الموقع بنجاح!");
-    } else {
-      alert("❌ فشل التحديث. رد جوجل: " + JSON.stringify(data));
-    }
-  } catch (e) {
-    alert("❌ خطأ في الاتصال بالخادم: " + e.message);
-  } finally {
-    btn.textContent = "📢 تحديث الشريط الإعلاني";
-    btn.disabled = false;
-  }
-});
 
 /* ============================================================
    الطباعة والواتساب
