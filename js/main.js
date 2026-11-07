@@ -136,21 +136,30 @@
   });
   if (searchBar) searchBar.addEventListener("input", filterProducts);
 
-  /* ---------------- ميزة السلة المتروكة ---------------- */
-  document.addEventListener("DOMContentLoaded", () => {
-    loadProducts();
-    
-    setTimeout(() => {
-      const cart = JSON.parse(localStorage.getItem("pharmacy_cart") || "[]");
-      if (cart.length > 0) {
-        const modal = document.getElementById("abandonedCartModal");
-        if (modal) modal.style.display = "flex";
-      }
-    }, 4000); // تظهر بعد 4 ثواني
-  });
+  /* ---------------- جلب إعدادات الموقع (الشريط الإعلاني) ---------------- */
+async function loadSettings() {
+  try {
+    const response = await fetch(`${API_URL}?action=getSettings`);
+    const data = await response.json();
+    if (data.settings && data.settings.TickerMessage) {
+      const ticker = document.getElementById("tickerText");
+      if (ticker) ticker.textContent = data.settings.TickerMessage;
+    }
+  } catch (error) {
+    console.error("خطأ في جلب الإعدادات:", error);
+  }
+}
 
-  window.closeCartModal = function() {
-    const modal = document.getElementById("abandonedCartModal");
-    if (modal) modal.style.display = "none";
-  };
-})();
+/* ---------------- ميزة السلة المتروكة ---------------- */
+document.addEventListener("DOMContentLoaded", () => {
+  loadProducts();
+  loadSettings(); // جلب نص الشريط
+  
+  setTimeout(() => {
+    const cart = JSON.parse(localStorage.getItem("pharmacy_cart") || "[]");
+    if (cart.length > 0) {
+      const modal = document.getElementById("abandonedCartModal");
+      if (modal) modal.style.display = "flex";
+    }
+  }, 4000);
+});
