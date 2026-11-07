@@ -1,5 +1,5 @@
 (function() {
-  const API_URL = "https://script.google.com/macros/s/AKfycbyUOI3f_H9shabQfW1mL1UYOMdwvbAlQKRUw_hQ7mrBhlMzojaJBHUruz4GHD5IKDez/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbzH_fiKERFvtR-aJ0yGOWgkrKYwpjg0jMKl8uSP-mG3HbHp_7DnwUMwplINmSpOxoQCDQ/exec";
 
   /* ---------------- الوضع الليلي ---------------- */
   const darkBtn = document.getElementById("darkBtn");
@@ -62,7 +62,6 @@
         card.setAttribute("data-category", product.Category || "all");
         card.setAttribute("data-search", product.Name.toLowerCase());
 
-        // زر غير متوفر إذا نفذ المخزون
         let actionButton = isOutOfStock 
           ? `<button class="btn btn-disabled" disabled>غير متوفر</button>`
           : `<button class="btn btn-primary add-btn" data-name="${product.Name}" data-price="${price}">أضف للطلب</button>`;
@@ -93,6 +92,20 @@
     } catch (error) {
       console.error(error);
       grid.innerHTML = `<p style="text-align:center; width:100%; color:red;">حدث خطأ في تحميل البيانات.</p>`;
+    }
+  }
+
+  /* ---------------- جلب الشريط الإعلاني ---------------- */
+  async function loadSettings() {
+    try {
+      const response = await fetch(`${API_URL}?action=getSettings`);
+      const data = await response.json();
+      if (data.settings && data.settings.TickerMessage) {
+        const ticker = document.getElementById("tickerText");
+        if (ticker) ticker.textContent = data.settings.TickerMessage;
+      }
+    } catch (error) {
+      console.error("خطأ في جلب الشريط الإعلاني:", error);
     }
   }
 
@@ -136,30 +149,22 @@
   });
   if (searchBar) searchBar.addEventListener("input", filterProducts);
 
-  /* ---------------- جلب إعدادات الموقع (الشريط الإعلاني) ---------------- */
-async function loadSettings() {
-  try {
-    const response = await fetch(`${API_URL}?action=getSettings`);
-    const data = await response.json();
-    if (data.settings && data.settings.TickerMessage) {
-      const ticker = document.getElementById("tickerText");
-      if (ticker) ticker.textContent = data.settings.TickerMessage;
-    }
-  } catch (error) {
-    console.error("خطأ في جلب الإعدادات:", error);
-  }
-}
+  /* ---------------- السلة المتروكة ---------------- */
+  document.addEventListener("DOMContentLoaded", () => {
+    loadProducts();
+    loadSettings();
+    
+    setTimeout(() => {
+      const cart = JSON.parse(localStorage.getItem("pharmacy_cart") || "[]");
+      if (cart.length > 0) {
+        const modal = document.getElementById("abandonedCartModal");
+        if (modal) modal.style.display = "flex";
+      }
+    }, 4000);
+  });
 
-/* ---------------- ميزة السلة المتروكة ---------------- */
-document.addEventListener("DOMContentLoaded", () => {
-  loadProducts();
-  loadSettings(); // جلب نص الشريط
-  
-  setTimeout(() => {
-    const cart = JSON.parse(localStorage.getItem("pharmacy_cart") || "[]");
-    if (cart.length > 0) {
-      const modal = document.getElementById("abandonedCartModal");
-      if (modal) modal.style.display = "flex";
-    }
-  }, 4000);
-});
+  window.closeCartModal = function() {
+    const modal = document.getElementById("abandonedCartModal");
+    if (modal) modal.style.display = "none";
+  };
+})();
