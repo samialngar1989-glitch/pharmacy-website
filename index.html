@@ -58,24 +58,24 @@
       </div>
     </div>
   </section>
-<!-- قسم الفيديو الإعلاني -->
-<section class="section" id="video-section">
-  <div class="container">
-    <h2 class="section-title">جولة في صيدلية المجيدي</h2>
-    <p class="section-subtitle">تعرف على موقعنا وخدماتنا من خلال هذا الفيديو</p>
-    
-    <div class="video-wrapper">
-      <!-- تم استخدام رابط التضمين الخاص بفيديوك -->
-      <iframe 
-        src="https://www.youtube.com/embed/q7evuFGZoj8" 
-        title="إعلان صيدلية المجيدي"
-        frameborder="0" 
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-        allowfullscreen>
-      </iframe>
+
+  <!-- الفيديو الإعلاني -->
+  <section class="section" id="video-section">
+    <div class="container">
+      <h2 class="section-title">جولة في صيدلية المجيدي</h2>
+      <p class="section-subtitle">تعرف على موقعنا وخدماتنا من خلال هذا الفيديو</p>
+      <div class="video-wrapper">
+        <iframe 
+          src="https://www.youtube.com/embed/q7evuFGZoj8" 
+          title="إعلان صيدلية المجيدي"
+          frameborder="0" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowfullscreen>
+        </iframe>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+
   <!-- الأقسام -->
   <section class="section" id="categories">
     <div class="container">
@@ -101,7 +101,6 @@
       <div class="search-wrapper">
         <input type="text" id="searchBar" placeholder="🔍 ابحث عن دواء..." />
       </div>
-      <!-- سيتم جلب المنتجات هنا ديناميكياً من جوجل شيت -->
       <div class="products-grid" id="productsGrid"></div>
       <p id="noResults" class="no-results" style="display:none;">لا توجد نتائج مطابقة.</p>
     </div>
@@ -197,6 +196,19 @@
 
   <a href="https://wa.me/967773704939" class="whatsapp-float" target="_blank">💬</a>
   <button id="toTop" class="to-top">↑</button>
+
+  <!-- نافذة السلة المتروكة -->
+  <div id="abandonedCartModal" class="cart-modal-overlay" style="display: none;">
+    <div class="cart-modal-box">
+      <div class="cart-modal-icon">🛒</div>
+      <h2>لقد تركت أدويتك في السلة!</h2>
+      <p>هل تود إكمال طلبك الآن؟ نحن هنا لخدمتك.</p>
+      <div class="cart-modal-actions">
+        <button onclick="closeCartModal()" class="btn btn-outline">تصفح الموقع</button>
+        <a href="#order" onclick="closeCartModal()" class="btn btn-primary">إكمال الطلب</a>
+      </div>
+    </div>
+  </div>
 
   <!-- السكربتات -->
   <script src="js/main.js"></script>
