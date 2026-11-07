@@ -1,8 +1,5 @@
-/* ============================================================
-   main.js — جلب البيانات من Google Sheets + إدارة السلة
-   ============================================================ */
 (function() {
-  const API_URL = "https://script.google.com/macros/s/AKfycbwVm6XWt0zFzdHdsXVBmiOBzODvxMLrpwshkND0Ao7MfUCqMoGqisvEb_in2m1HV0VoLw/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbyUOI3f_H9shabQfW1mL1UYOMdwvbAlQKRUw_hQ7mrBhlMzojaJBHUruz4GHD5IKDez/exec";
 
   /* ---------------- الوضع الليلي ---------------- */
   const darkBtn = document.getElementById("darkBtn");
@@ -21,27 +18,18 @@
     menuBtn.addEventListener("click", () => nav.classList.toggle("open"));
   }
 
-  /* ---------------- دالة إضافة السلة (عامة) ---------------- */
+  /* ---------------- دالة إضافة السلة ---------------- */
   window.addToCart = function(name, price) {
     let cart = JSON.parse(localStorage.getItem("pharmacy_cart") || "[]");
     const existing = cart.find(item => item.name === name);
     const numericPrice = parseFloat(price) || 0;
     
-    if (existing) {
-      existing.qty += 1;
-    } else {
-      cart.push({ name: name, price: numericPrice, qty: 1 });
-    }
+    if (existing) existing.qty += 1;
+    else cart.push({ name: name, price: numericPrice, qty: 1 });
     
     localStorage.setItem("pharmacy_cart", JSON.stringify(cart));
-    
-    // إبلاغ ملف booking.js بتحديث الواجهة
     window.dispatchEvent(new Event("cartUpdated"));
-    
-    // إشعار
-    if (typeof window.showToast === "function") {
-      window.showToast(`تمت إضافة: ${name}`);
-    }
+    if (typeof window.showToast === "function") window.showToast(`تمت إضافة: ${name}`);
   };
 
   /* ---------------- جلب المنتجات ---------------- */
@@ -65,7 +53,8 @@
         if (!product.Name) return;
         
         const remaining = (product.TotalQty || 0) - (product.SoldQty || 0);
-        const isLow = remaining <= 1;
+        const isOutOfStock = remaining <= 0;
+        const isLow = remaining <= 1 && remaining > 0;
         const price = parseFloat(product.Price) || 0;
 
         const card = document.createElement("div");
@@ -73,34 +62,36 @@
         card.setAttribute("data-category", product.Category || "all");
         card.setAttribute("data-search", product.Name.toLowerCase());
 
+        // زر غير متوفر إذا نفذ المخزون
+        let actionButton = isOutOfStock 
+          ? `<button class="btn btn-disabled" disabled>غير متوفر</button>`
+          : `<button class="btn btn-primary add-btn" data-name="${product.Name}" data-price="${price}">أضف للطلب</button>`;
+
         card.innerHTML = `
+          ${isOutOfStock ? '<span class="product-badge out-stock">نفذت الكمية</span>' : ''}
           <img src="${product.ImageUrl}" alt="${product.Name}" style="background:#eee;" />
           <h3>${product.Name}</h3>
           <div class="stock-info">
             <span class="stock-badge total">الكلية: ${product.TotalQty || 0}</span>
             <span class="stock-badge sold">المباع: ${product.SoldQty || 0}</span>
-            <span class="stock-badge remain ${isLow ? 'low' : ''}">المتبقي: ${remaining} ${isLow ? '⚠️' : ''}</span>
+            <span class="stock-badge remain ${isOutOfStock || isLow ? 'low' : ''}">المتبقي: ${remaining} ${isOutOfStock || isLow ? '⚠️' : ''}</span>
           </div>
           <p class="price">${price} ر.ي</p>
           <div class="product-actions">
-            <button class="btn btn-primary add-btn" data-name="${product.Name}" data-price="${price}">أضف للطلب</button>
+            ${actionButton}
             <a href="https://wa.me/967773704939?text=أريد طلب: ${product.Name}" target="_blank" class="btn btn-whatsapp">💬</a>
           </div>
         `;
         grid.appendChild(card);
       });
 
-      // ربط الأزرار بالسلة بعد إنشائها
       document.querySelectorAll(".add-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-          window.addToCart(btn.dataset.name, btn.dataset.price);
-        });
+        btn.addEventListener("click", () => window.addToCart(btn.dataset.name, btn.dataset.price));
       });
 
       filterProducts();
-
     } catch (error) {
-      console.error("Error loading products:", error);
+      console.error(error);
       grid.innerHTML = `<p style="text-align:center; width:100%; color:red;">حدث خطأ في تحميل البيانات.</p>`;
     }
   }
@@ -115,8 +106,12 @@
     const cards = document.querySelectorAll(".product-card");
     let visibleCount = 0;
 
+    const categoryMap = { "مسكنات": "general", "مضادات حيوية": "antibiotics", "فيتامينات": "vitamins", "الجهاز الهضمي": "digestive", "العناية بالبشرة": "skincare", "الأم والطفل": "mom-baby", "أجهزة القياس": "devices", "مستلزمات طبية": "supplies" };
+
     cards.forEach(card => {
-      const category = card.dataset.category;
+      let category = card.dataset.category;
+      if (categoryMap[category]) category = categoryMap[category];
+      
       const searchData = (card.dataset.search || "").toLowerCase();
       const matchCategory = activeCategory === "all" || category === activeCategory;
       const matchSearch = searchTerm === "" || searchData.includes(searchTerm);
@@ -139,9 +134,23 @@
       filterProducts();
     });
   });
-
   if (searchBar) searchBar.addEventListener("input", filterProducts);
 
-  // بدء التشغيل
-  document.addEventListener("DOMContentLoaded", loadProducts);
+  /* ---------------- ميزة السلة المتروكة ---------------- */
+  document.addEventListener("DOMContentLoaded", () => {
+    loadProducts();
+    
+    setTimeout(() => {
+      const cart = JSON.parse(localStorage.getItem("pharmacy_cart") || "[]");
+      if (cart.length > 0) {
+        const modal = document.getElementById("abandonedCartModal");
+        if (modal) modal.style.display = "flex";
+      }
+    }, 4000); // تظهر بعد 4 ثواني
+  });
+
+  window.closeCartModal = function() {
+    const modal = document.getElementById("abandonedCartModal");
+    if (modal) modal.style.display = "none";
+  };
 })();
