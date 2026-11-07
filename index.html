@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title data-ar="صيدلية المجيدي | صحتك أمانة" data-en="Al-Majidi Pharmacy | Your Health is Our Trust">صيدلية المجيدي | صحتك أمانة</title>
+  <title id="pageTitle" data-ar="صيدلية المجيدي | صحتك أمانة" data-en="Al-Majidi Pharmacy | Your Health is Our Trust">صيدلية المجيدي | صحتك أمانة</title>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/dark-mode.css" />
   <link rel="icon" href="images/logo.png" />
@@ -13,7 +13,6 @@
   <!-- شريط الإعلانات -->
   <div class="ticker-bar">
     <div class="ticker-content">
-      <!-- تمت إضافة id هنا ليتم تحديثه من لوحة التحكم -->
       <span id="tickerText">🚚 توصيل مجاني للطلبات فوق 5000 ريال | 🎁 خصم 20% على الفيتامينات بكود VIT20 | 📞 للاستفسار: 773704939</span>
     </div>
   </div>
@@ -23,7 +22,7 @@
     <div class="container header-inner">
       <a href="#home" class="logo">
         <img src="images/logo.png" alt="logo" />
-        <span>صيدلية المجيدي</span>
+        <span id="sitePharmacyName">صيدلية المجيدي</span>
       </a>
       <nav class="nav" id="nav">
         <a href="#home">الرئيسية</a>
@@ -48,7 +47,7 @@
     <div class="container hero-inner">
       <div class="hero-text">
         <h1>صحتك أمانة بين أيدينا</h1>
-        <p>صيدلية المجيدي تقدم لك أفضل الأدوية والعلاجات الأصلية، مع استشارة صيدلانية موثوقة وتوصيل سريع لباب منزلك.</p>
+        <p id="siteHeroText">صيدلية المجيدي تقدم لك أفضل الأدوية والعلاجات الأصلية، مع استشارة صيدلانية موثوقة وتوصيل سريع لباب منزلك.</p>
         <div class="hero-buttons">
           <a href="#order" class="btn btn-primary">اطلب الآن</a>
           <a href="#services" class="btn btn-outline">خدماتنا</a>
@@ -63,12 +62,13 @@
   <!-- الفيديو الإعلاني -->
   <section class="section" id="video-section">
     <div class="container">
-      <h2 class="section-title">جولة في صيدلية المجيدي</h2>
+      <h2 class="section-title">جولة في الصيدلية</h2>
       <p class="section-subtitle">تعرف على موقعنا وخدماتنا من خلال هذا الفيديو</p>
       <div class="video-wrapper">
-        <iframe 
+        <!-- سيتم تحديث الرابط تلقائياً من لوحة التحكم -->
+        <iframe id="siteVideoIframe" 
           src="https://www.youtube.com/embed/q7evuFGZoj8" 
-          title="إعلان صيدلية المجيدي"
+          title="إعلان الصيدلية"
           frameborder="0" 
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
           allowfullscreen>
@@ -179,23 +179,23 @@
   <footer class="footer">
     <div class="container footer-grid">
       <div>
-        <h3>صيدلية المجيدي</h3>
-        <p>الصيدلي: د. سامي محمد احمد</p>
-        <p>رقم الترخيص: 80808080</p>
-        <p>هاتف: 773704939</p>
+        <h3 id="footerPharmacyName">صيدلية المجيدي</h3>
+        <p id="footerDrName">الصيدلي: د. سامي محمد احمد</p>
+        <p id="footerLicense">رقم الترخيص: 80808080</p>
+        <p id="footerPhone">هاتف: 773704939</p>
       </div>
       <div>
         <h3>سياسة الإرجاع</h3>
-        <p>لأسباب صحية وقانونية: لا يمكن إرجاع الأدوية بعد صرفها. يمكن استبدال المنتجات غير الدوائية خلال 3 أيام بشرط عدم فتحها.</p>
+        <p id="footerReturnPolicy">لأسباب صحية وقانونية: لا يمكن إرجاع الأدوية بعد صرفها. يمكن استبدال المنتجات غير الدوائية خلال 3 أيام بشرط عدم فتحها.</p>
       </div>
     </div>
     <div class="container disclaimer">
-      <p><strong>تنبيه هام:</strong> هذا الموقع لا يُغني عن الاستشارة الطبية المباشرة. الأدوية التي تستلزم وصفة طبية لا تُصرف إلا بعد تقديم الوصفة والتحقق منها.</p>
-      <p class="copyright">© <span id="year"></span> صيدلية المجيدي. جميع الحقوق محفوظة.</p>
+      <p id="footerWarningText"><strong>تنبيه هام:</strong> هذا الموقع لا يُغني عن الاستشارة الطبية المباشرة. الأدوية التي تستلزم وصفة طبية لا تُصرف إلا بعد تقديم الوصفة والتحقق منها.</p>
+      <p class="copyright">© <span id="year"></span> <span id="footerCopyrightName">صيدلية المجيدي</span>. جميع الحقوق محفوظة.</p>
     </div>
   </footer>
 
-  <a href="https://wa.me/967773704939" class="whatsapp-float" target="_blank">💬</a>
+  <a id="whatsappFloatLink" href="https://wa.me/967773704939" class="whatsapp-float" target="_blank">💬</a>
   <button id="toTop" class="to-top">↑</button>
 
   <!-- نافذة السلة المتروكة -->
