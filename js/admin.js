@@ -1,7 +1,4 @@
-/* ============================================================
-   admin.js — لوحة التحكم الشاملة المتصلة بـ Google Sheets
-   ============================================================ */
-const API_URL = "https://script.google.com/macros/s/AKfycbyUOI3f_H9shabQfW1mL1UYOMdwvbAlQKRUw_hQ7mrBhlMzojaJBHUruz4GHD5IKDez/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzH_fiKERFvtR-aJ0yGOWgkrKYwpjg0jMKl8uSP-mG3HbHp_7DnwUMwplINmSpOxoQCDQ/exec";
 const ADMIN_PASSWORD = "almajidi2025";
 const SESSION_KEY = "pharmacy_admin_logged";
 
@@ -58,9 +55,6 @@ if (darkBtn) {
   darkBtn.addEventListener("click", () => applyDarkMode(!document.body.classList.contains("dark")));
 }
 
-/* ============================================================
-   جلب كل البيانات
-   ============================================================ */
 async function loadAllData() {
   await Promise.all([loadOrders(), loadProducts(), loadSuppliers()]);
 }
@@ -103,15 +97,11 @@ async function loadSuppliers() {
   }
 }
 
-/* ============================================================
-   عرض الطلبات
-   ============================================================ */
 function renderOrders() {
   const container = document.getElementById("ordersContainer");
   const search = document.getElementById("searchInput").value.toLowerCase();
   const status = document.getElementById("filterStatus").value;
 
-  // الإحصائيات
   document.getElementById("statTotal").textContent = globalOrders.length;
   document.getElementById("statPending").textContent = globalOrders.filter(o => o.Status === "قيد الانتظار").length;
   document.getElementById("statPreparing").textContent = globalOrders.filter(o => o.Status === "قيد التجهيز").length;
@@ -167,9 +157,6 @@ function renderOrders() {
 document.getElementById("searchInput").addEventListener("input", renderOrders);
 document.getElementById("filterStatus").addEventListener("change", renderOrders);
 
-/* ============================================================
-   تحديث حالة الطلب
-   ============================================================ */
 async function updateStatus(invoiceNum, newStatus) {
   try {
     await fetch(API_URL, {
@@ -177,7 +164,6 @@ async function updateStatus(invoiceNum, newStatus) {
       body: JSON.stringify({ action: "updateOrderStatus", invoiceNum: invoiceNum, status: newStatus }),
       headers: { "Content-Type": "text/plain;charset=utf-8" }
     });
-    
     loadAllData();
     alert("✅ تم تحديث الحالة وخصم المخزون في Google Sheets");
   } catch (err) {
@@ -185,9 +171,6 @@ async function updateStatus(invoiceNum, newStatus) {
   }
 }
 
-/* ============================================================
-   عرض المخزون وتنبيه الصلاحية
-   ============================================================ */
 function renderInventory() {
   const container = document.getElementById("inventoryContainer");
   const expiryBox = document.getElementById("expiryWarningBox");
@@ -210,7 +193,6 @@ function renderInventory() {
     const isLow = remaining <= 1;
     const totalRevenue = (p.SoldQty || 0) * (p.Price || 0);
     
-    // فحص تاريخ الصلاحية
     if (p.ExpiryDate) {
       const expiryDate = new Date(p.ExpiryDate);
       const diffDays = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
@@ -231,7 +213,6 @@ function renderInventory() {
 
   container.innerHTML = html + `</tbody></table>`;
 
-  // عرض تنبيه الصلاحية
   if (expiryBox && expiryList) {
     if (expiringHTML) {
       expiryBox.style.display = "block";
@@ -244,28 +225,19 @@ function renderInventory() {
 
 document.getElementById("refreshInventoryBtn").addEventListener("click", loadProducts);
 
-/* ============================================================
-   عرض طلبات الشركات
-   ============================================================ */
 function renderSuppliers(suppliers) {
   const container = document.getElementById("suppliersContainer");
-  
   if (suppliers.length === 0) {
     container.innerHTML = `<p class="empty-state">لا توجد طلبات شراء مسجلة.</p>`;
     return;
   }
-
   let html = `<table class="data-table"><thead><tr>
     <th>التاريخ</th><th>الشركة</th><th>الدواء</th><th>العدد</th><th>موعد الاستلام</th>
   </tr></thead><tbody>`;
-
   suppliers.forEach(s => {
     let dateStr = s.Date ? new Date(s.Date).toLocaleDateString("ar-SA") : "";
-    html += `<tr>
-      <td>${dateStr}</td><td>${s.Company}</td><td>${s.ItemName}</td><td>${s.Qty}</td><td>${s.ExpectedDate || 'غير محدد'}</td>
-    </tr>`;
+    html += `<tr><td>${dateStr}</td><td>${s.Company}</td><td>${s.ItemName}</td><td>${s.Qty}</td><td>${s.ExpectedDate || 'غير محدد'}</td></tr>`;
   });
-
   container.innerHTML = html + `</tbody></table>`;
 }
 
@@ -293,10 +265,10 @@ document.getElementById("whatsappCampaignBtn").addEventListener("click", async (
     if (data.success) {
       alert("✅ تم تحديث الشريط الإعلاني في الموقع بنجاح!");
     } else {
-      alert("❌ حدث خطأ أثناء التحديث.");
+      alert("❌ فشل التحديث. رد جوجل: " + JSON.stringify(data));
     }
   } catch (e) {
-    alert("❌ خطأ في الاتصال بالخادم.");
+    alert("❌ خطأ في الاتصال بالخادم: " + e.message);
   } finally {
     btn.textContent = "📢 تحديث الشريط الإعلاني";
     btn.disabled = false;
